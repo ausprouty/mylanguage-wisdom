@@ -1,0 +1,112 @@
+body {
+  background-color: lightgrey;
+}
+.biblereference,
+.bible_reference {
+  font-weight: bold;
+  color: green;
+  font-size: 1.2em;
+}
+
+.bible_text {
+  color: green;
+}
+.select {
+  background-color: lightgrey;
+}
+
+.q-gutter-md,
+.q-mr-md,
+.q-ml-md {
+  margin-top: 10px;
+  background-color: lightgreen;
+
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.q-gutter-y-md,
+.q-gutter-md {
+  margin-top: 0px;
+}
+.q-gutter-y-md > *,
+.q-gutter-md > * {
+  margin-top: 0px;
+}
+div.dbs {
+  background-color: white;
+  max-width: 800px;
+  margin: auto;
+  background-color: white;
+  padding: 10px;
+}
+table {
+  width: 100%;
+  max-width: 800px;
+}
+td {
+  width: 50%;
+  vertical-align: top;
+  padding: 10px;
+}
+li {
+  padding-top: 10px;
+}
+
+title.dbs {
+  font-size: 1.5em;
+  text-align: center;
+}
+h1.dbs {
+  font-size: 1.5em;
+  line-height: 1;
+}
+h2.dbs {
+  margin-block-end: 0em;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: green;
+}
+h3.dbs {
+  margin-block-end: 0.3em;
+  font-size: 1.17em;
+}
+h4.dbs {
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+  font-size: 1em;
+}
+table.dbs {
+  border-collapse: collapse;
+  border: none;
+}
+td.dbs,
+th.dbs {
+  border: none;
+}
+td.rtl {
+  direction: rtl;
+}
+.ltr.dbs.link {
+  text-align: center;
+}
+.languages {
+  text-align: center;
+}
+.title {
+  text-align: center;
+}
+p.copyright {
+  text-align: center;
+  color: grey;
+}
+
+.bible-container {
+  display: flex;
+  padding: 10px;
+}
+.bible-text {
+  flex: 1;
+}
+.bible-text:first-child {
+  margin-right: 20px;
+}
