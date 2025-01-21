@@ -3,22 +3,7 @@
     <p> {{ $t("index.para1") }}</p>
     <p> {{ $t("index.para2") }}</p>
     <table>
-      <tr class = "full-width">
-      <td class="side-by-side" @click="handleImageClick('/deepavali')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/deepavali.png">
-      </td>
-      <td class="side-by-side"  @click="handleImageClick('/karma')" clickable v-ripple>
-        <img   class="menu_picture" src="menu/karma.png">
-      </td>
-    </tr>
-    <tr class = "full-width">
-      <td class="side-by-side" @click="handleImageClick('/mountain')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/mountain.png">
-      </td>
-      <td class="side-by-side"  @click="handleImageClick('/birth')" clickable v-ripple>
-        <img   class="menu_picture" src="menu/birth.png">
-      </td>
-    </tr>
+
     <tr class = "full-width">
       <td class="side-by-side" @click="handleImageClick('/life')" clickable v-ripple >
         <img  class="menu_picture" src="menu/life.png">

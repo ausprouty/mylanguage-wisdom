@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import { api } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
+import { languages} from "/src/data/languages.js";
 export default {
-  name: "HinduLanguages",
+  name: "LanguageOptions",
   setup() {
     const languageStore = useLanguageStore();
     return {
@@ -35,32 +35,27 @@ export default {
     selectedLanguage: {
       handler() {
         this.languageCodeJF=529;
-        console.log (this.languageOptions)
-        console.log ("selected language: " + this.selectedLanguage)
         for( var i = 0; i < this.languageOptions.length; i++){
-          console.log ("language Options: " + this.languageOptions[i].value)
           if (this.languageOptions[i].value == this.selectedLanguage){
-            console.log( this.languageOptions[i] )
             this.languageCodeJF = this.languageOptions[i].languageCodeJF;
             break;
           }
         }
-        console.log (this.languageCodeJF)
         this.languageStore.updateLanguageSelected(this.selectedLanguage, this.languageCodeJF);
       },
       deep: true,
     },
   },
   created() {
-    api.get("api/languages/hindi").then((response) => {
-      this.languageArray = response.data;
-      this.languageStore.updateLanguages(this.languageArray);
-      this.languageOptions = this.languageArray.map((item) => ({
-        label: item.name,
-        value: item.languageCodeHL,
-        languageCodeJF: item.languageCodeJF
-      }));
-    });
+     // Use the static languages data
+    this.languageArray = languages;
+    this.languageStore.updateLanguages(this.languageArray); // Update store if necessary
+    this.languageOptions = this.languageArray.map((item) => ({
+      label: item.name + ' (' + item.ethnicName + ')',
+      value: item.id,
+      languageCodeHL: item.languageCodeHL,
+      languageCodeJF: item.languageCodeJF,
+    }));
   },
 };
 </script>

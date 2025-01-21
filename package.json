@@ -1,8 +1,8 @@
 {
-  "name": "guru.myLanguage.net.au",
+  "name": "wisdom.myLanguage.net.au",
   "version": "0.0.1",
-  "description": "Finding a Guru worth Following",
-  "productName": "Finding a Guru",
+  "description": "Finding Wisdom",
+  "productName": "Finding Wisdom",
   "author": "ausprouty <bob.prouty@powertochange.org.au>",
   "private": true,
   "scripts": {

@@ -6,7 +6,7 @@
 
         <q-toolbar-title>
           <router-link to="/index" exact class="toolbar-title">
-            Finding a Guru
+            Finding Wisdom
           </router-link>
         </q-toolbar-title>
 
@@ -22,25 +22,25 @@
       </q-toolbar>
     </q-header>
     <q-drawer v-model="rightDrawerOpen" side="right" show-if-above bordered>
-      <HinduLanguages />
+      <LanguageOptions />
     </q-drawer>
 
     <q-page-container class="set_size">
       <router-view />
-      <footer class="footer">Copyright 2023 Power to Change</footer>
+      <footer class="footer">Copyright 2025 Power to Change</footer>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
-import HinduLanguages from "components/HinduLanguages.vue";
+import LanguageOptions from "src/components/LanguageOptions.vue";
 import ShareLink from "components/ShareLink.vue";
 
 export default defineComponent({
   name: "MainLayout",
   components: {
-    HinduLanguages,
+    LanguageOptions,
     ShareLink,
   },
   setup() {

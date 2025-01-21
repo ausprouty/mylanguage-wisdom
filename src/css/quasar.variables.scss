@@ -1,26 +1,26 @@
 // Quasar SCSS (& Sass) Variables
 // --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+// Customized for Lunar New Year theme
 
-// Check documentation for full list of Quasar variables
+// Primary colors inspired by Lunar New Year
+$primary: #d32f2f; // Vibrant red, symbolizing good fortune and joy
+$secondary: #ffcc00; // Gold, representing prosperity and wealth
+$accent: #8e44ad; // Deep purple for an additional royal, festive touch
 
-// Your own variables (that are declared here) and Quasar's own
-// ones will be available out of the box in your .vue/.scss/.sass files
+// Background colors
+$dark: #2e2e2e; // Dark background for contrast
+$dark-page: #1c1c1c; // Slightly darker for page backgrounds
 
-// It's highly recommended to change the default colors
-// to match your app's branding.
-// Tip: Use the "Theme Builder" on Quasar's documentation website.
+// Functional colors
+$positive: #28a745; // Green, symbolizing growth and harmony
+$negative: #c0392b; // Bright red for warnings or errors
+$info: #3498db; // Blue for informational highlights
+$warning: #f39c12; // Orange-yellow, symbolizing energy and caution
 
-$primary: darkgreen
-;
-$secondary: #f0634a;
-$accent: #9c27b0;
+// Custom add-ons for Lunar New Year feel
+$success-highlight: #e74c3c; // Festive red for success messages
+$gold-highlight: #f1c40f; // Gold accents for special elements
 
-$dark: #1d1d1d;
-$dark-page: #121212;
-
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+// Optional complementary colors
+$neutral: #f0f0f0; // Soft white-gray for neutral backgrounds
+$shadow: #7f8c8d; // Subtle gray for shadows
