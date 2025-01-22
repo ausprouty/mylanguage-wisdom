@@ -20,25 +20,6 @@ const routes = [
         component: () => import('pages/IndexPage.vue')
       },
       {
-        name: 'MountainOfGod',
-        path: '/mountain',
-        component: () => import('pages/MountainOfGod.vue')
-      },
-      {
-        name: 'Karma',
-        path: 'karma',
-        component: () => import('src/pages/KarmaContent.vue')
-      },{
-        name: 'Deepalavi',
-        path: '/deepavali',
-        component: () => import('src/pages/DeepavaliContent.vue')
-      },
-      {
-        name: 'BirthofGuru',
-        path: '/birth',
-        component: () => import('pages/BirthOfGuru.vue')
-      },
-      {
         name: 'HisLife',
         path: '/life/:lessonLink?/:languageCode?',
         component: () => import('src/pages/HisLife.vue')
@@ -53,12 +34,6 @@ const routes = [
         path: '/book/:lessonLink?/:languageCode?',
         component: () => import('pages/HisBook.vue')
       },
-
-    {
-      name: 'FollowingHim',
-      path: '/following/:lessonLink?/:languageCode?',
-      component: () => import('pages/FollowingHim.vue')
-    },
     {
       name: 'LeadershipTeachings',
       path: '/leadership/:lessonLink?/:languageCode?',

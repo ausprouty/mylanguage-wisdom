@@ -64,6 +64,7 @@ export const useLanguageStore = defineStore("languageStore", {
         var local = localStorage.getItem("languageSelected", '{"languageSelected":{"languageCodeHL":"eng00","languageCodeJF":529}}');
           state.languageSelected = JSON.parse(local)
       }
+      console.log ('getLanguageCodeHLSelected says ' + state.languageSelected.languageCodeHL)
       return state.languageSelected.languageCodeHL
     },
 

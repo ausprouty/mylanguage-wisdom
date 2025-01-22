@@ -6,26 +6,19 @@
 
     <tr class = "full-width">
       <td class="side-by-side" @click="handleImageClick('/life')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/life.png">
+        <img  class="menu_picture" src="menu/story.png">
       </td>
       <td class="side-by-side" @click="handleImageClick('/teachings')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/teachings.png">
+        <img  class="menu_picture" src="menu/wisdom2.png">
       </td>
     </tr>
     <tr class = "full-width">
       <td class="side-by-side" @click="handleImageClick('/book')" clickable v-ripple  >
-        <img  class="menu_picture" src="menu/book.png">
+        <img  class="menu_picture" src="menu/grand2.png">
       </td>
-      <td class="side-by-side" @click="handleImageClick('/following')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/following.png">
-      </td>
-    </tr>
-    <tr class = "full-width">
-      <td class="side-by-side" @click="handleImageClick('/leadership')" clickable v-ripple >
-        <img class="menu_picture" src="menu/leading.png">
-      </td>
+
       <td class="side-by-side" @click="openExternalWebsite()" clickable v-ripple >
-          <img class="menu_picture" src="menu/questions.png">
+          <img class="menu_picture" src="menu/discover.png">
       </td>
     </tr>
   </table>

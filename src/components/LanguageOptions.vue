@@ -25,9 +25,10 @@ export default {
   },
   data() {
     return {
+      selectedLanguage: 'eng00',
       languageOptions: [],
       languageArray: [],
-      selectedLanguage: 'eng00',
+      languageCodeHL: 'eng00',
       languageCodeJF: '529'
     };
   },
@@ -35,13 +36,16 @@ export default {
     selectedLanguage: {
       handler() {
         this.languageCodeJF=529;
+        console.log (this.selectedLanguage + ' was selected');
         for( var i = 0; i < this.languageOptions.length; i++){
           if (this.languageOptions[i].value == this.selectedLanguage){
             this.languageCodeJF = this.languageOptions[i].languageCodeJF;
+            this.languageCodeHL = this.languageOptions[i].languageCodeHL;
             break;
           }
         }
-        this.languageStore.updateLanguageSelected(this.selectedLanguage, this.languageCodeJF);
+        console.log ('Language Options says we now have languageCodeHL' + this.languageCodeHL);
+        this.languageStore.updateLanguageSelected(this.languageCodeHL, this.languageCodeJF);
       },
       deep: true,
     },

@@ -76,8 +76,6 @@ li {
 /* Titles and Headers */
 .title {
   text-align: center;
-  color: #ffcc00; /* Gold */
-  text-shadow: 1px 1px 3px #d32f2f; /* Subtle red glow */
 }
 
 h1.dbs,
@@ -86,6 +84,10 @@ h3.dbs,
 h4.dbs {
   font-family: 'Arial', sans-serif; /* Modern and clean */
   color: #d32f2f; /* Red for emphasis */
+}
+h1.dbs{
+  font-size: 3rem;
+  line-height: 3rem;
 }
 
 h2.dbs {
@@ -135,9 +137,21 @@ p.copyright {
   background-color: #f9e79f; /* Subtle gold background */
   border-radius: 5px;
 }
+div.dbs{
+  background-color: #f9e79f;
+}
+li.dbs{
+  font-size:1rem;
+}
 
+div.bible_text{
+  color:#47135e;
+  font-weight:40;
+  font-size: 1rem;
+}
 .bible-text {
   flex: 1;
+  color:black;
 }
 
 .bible-text:first-child {
