@@ -56,7 +56,7 @@ export default {
       languageCodeHL: item.languageCodeHL,
       languageCodeJF: item.languageCodeJF,
     }));
-    this.selectedLanguage = this.languageStore.getLanguageValue();
+    this.selectedLanguage = this.languageStore.getLanguageValue;
   },
 };
 </script>
