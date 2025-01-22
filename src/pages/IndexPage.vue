@@ -6,7 +6,7 @@
 
     <tr class = "full-width">
       <td class="side-by-side" @click="handleImageClick('/life')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/story.png">
+        <img  class="menu_picture" src="menu/source.png">
       </td>
       <td class="side-by-side" @click="handleImageClick('/teachings')" clickable v-ripple >
         <img  class="menu_picture" src="menu/wisdom2.png">
