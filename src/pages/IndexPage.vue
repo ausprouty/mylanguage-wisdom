@@ -5,15 +5,15 @@
     <table>
 
     <tr class = "full-width">
-      <td class="side-by-side" @click="handleImageClick('/life')" clickable v-ripple >
+      <td class="side-by-side" @click="handleImageClick('/source')" clickable v-ripple >
         <img  class="menu_picture" src="menu/source.png">
       </td>
-      <td class="side-by-side" @click="handleImageClick('/teachings')" clickable v-ripple >
+      <td class="side-by-side" @click="handleImageClick('/wisdom')" clickable v-ripple >
         <img  class="menu_picture" src="menu/wisdom2.png">
       </td>
     </tr>
     <tr class = "full-width">
-      <td class="side-by-side" @click="handleImageClick('/book')" clickable v-ripple  >
+      <td class="side-by-side" @click="handleImageClick('/story')" clickable v-ripple  >
         <img  class="menu_picture" src="menu/grand2.png">
       </td>
 

@@ -19,7 +19,8 @@ export const useLanguageStore = defineStore("languageStore", {
     languages: [],
     languageSelected: {
       languageCodeHL: 'eng00',
-      languageCodeJF: 529
+      languageCodeJF: 529,
+      value: 3
     },
     previousPage: '/index'
   }),
@@ -81,11 +82,19 @@ export const useLanguageStore = defineStore("languageStore", {
 
     getLanguageSelected: (state) => {
       if (state.languageSelected == null){
-        var local = localStorage.getItem("languageSelected", '{"languageSelected":{"languageCodeHL":"eng00","languageCodeJF":529}}');
+        var local = localStorage.getItem("languageSelected", '{"languageSelected":{"languageCodeHL":"eng00","languageCodeJF":529,  "value": 3}}');
           state.languageSelected = JSON.parse(local)
       }
       return state.languageSelected
     },
+    getLanguageValue: (state) => {
+      if (state.languageSelected == null){
+        var local = localStorage.getItem("languageSelected", '{"languageSelected":{"languageCodeHL":"eng00","languageCodeJF":529, "value": 3}}');
+          state.languageSelected = JSON.parse(local)
+      }
+      return state.languageSelected.value
+    },
+
     getLeadershipLesson: (state) => {
       if (state.leadershipLesson  == null || typeof state.leadershipLesson  == 'undefined'){
         state.leadershipLesson = localStorage.getItem("leadershipLesson", 1)

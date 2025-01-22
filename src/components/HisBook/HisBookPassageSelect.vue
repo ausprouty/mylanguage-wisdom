@@ -50,7 +50,6 @@ export default {
       return this.languageStore.getLanguageCodeHLSelected;
     },
     currentSegment() {
-
       return this.languageStore.getBookLesson;
     },
   },

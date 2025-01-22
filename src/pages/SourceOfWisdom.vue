@@ -1,8 +1,8 @@
 <template>
   <q-page padding>
-    <h2> {{ $t("life.title") }}</h2>
-      <p>{{ $t("life.para1") }}</p>
-      <p>{{ $t("life.para2") }}</p>
+    <h2>{{ $t("life.title") }}</h2>
+    <p>{{ $t("life.para1") }}</p>
+    <p>{{ $t("life.para2") }}</p>
     <div>
       <JVideoSegmentSelect
         :languageCodeHL="computedLanguageCodeHLSelected"
@@ -20,21 +20,23 @@
       <JVideoPlayer :languageCodeHL="computedLanguageCodeHLSelected" />
     </div>
 
-    <div><JVideoQuestions :languageCodeHL="computedLanguageCodeHLSelected" /></div>
+    <div>
+      <JVideoQuestions :languageCodeHL="computedLanguageCodeHLSelected" />
+    </div>
     <!-- content -->
   </q-page>
 </template>
 
 <script>
-import JVideoPlayer from "src/components/JesusVideo/JVideoPlayer.vue";
-import JVideoSegmentSelect from "src/components/JesusVideo/JVideoSegmentSelect.vue";
-import JVideoSegmentController from "src/components/JesusVideo/JVideoSegmentController.vue";
-import JVideoQuestions from "src/components/JesusVideo/JVideoQuestions.vue";
+import JVideoPlayer from "src/components/SourceOfWisdom/JVideoPlayer.vue";
+import JVideoSegmentSelect from "src/components/SourceOfWisdom/JVideoSegmentSelect.vue";
+import JVideoSegmentController from "src/components/SourceOfWisdom/JVideoSegmentController.vue";
+import JVideoQuestions from "src/components/SourceOfWisdom/JVideoQuestions.vue";
 import { useLanguageStore } from "stores/LanguageStore";
 import { computed } from "vue";
 
 export default {
-  name: "HisLife",
+  name: "SourceOfWisdom",
   props: {
     lessonLink: Number,
     languageCode: String,
@@ -89,10 +91,10 @@ export default {
 
   methods: {
     handleNewVideoSegment(response) {
-      console.log ('handleNewVideoSegment')
-      console.log (response)
+      console.log("handleNewVideoSegment");
+      console.log(response);
       this.videoSegment = response;
-      this.languageStore.updateJVideoSegmentId(response)
+      this.languageStore.updateJVideoSegmentId(response);
     },
   },
 };

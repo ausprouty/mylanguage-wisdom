@@ -1,57 +1,43 @@
-
 const routes = [
   {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    path: "/",
+    component: () => import("layouts/MainLayout.vue"),
     children: [
+
       {
-        name: 'International',
-        path: '/test',
-        component: () => import('src/pages/InternationalTest.vue')
+        name: "Index",
+        path: "/index",
+        component: () => import("pages/IndexPage.vue"),
       },
       {
-        name: 'RestorePage',
-        path: '/restore',
-        component: () => import('src/pages/RestorePage.vue')
+        name: "SourceOfWisdom",
+        path: "/life/:lessonLink?/:languageCode?",
+        component: () => import("src/pages/SourceOfWisdom.vue"),
       },
       {
-        name: 'Index',
-        path: '/index',
-        component: () => import('pages/IndexPage.vue')
+        name: "HisWisdom",
+        path: "/wisdom/:lessonLink?/:languageCode?",
+        component: () => import("src/pages/HisWisdom.vue"),
       },
       {
-        name: 'HisLife',
-        path: '/life/:lessonLink?/:languageCode?',
-        component: () => import('src/pages/HisLife.vue')
+        name: "GrandStory",
+        path: "/grand/:lessonLink?/:languageCode?",
+        component: () => import("src/pages/GrandStory.vue"),
       },
+      
       {
-        name: 'HisTeachings',
-        path: '/teachings/:lessonLink?/:languageCode?',
-        component: () => import('pages/HisTeachings.vue')
+        name: "AskHisFollowers",
+        path: "/questions",
+        component: () => import("src/pages/RestorePage.vue"),
       },
-      {
-        name: 'HisBook',
-        path: '/book/:lessonLink?/:languageCode?',
-        component: () => import('pages/HisBook.vue')
-      },
-    {
-      name: 'LeadershipTeachings',
-      path: '/leadership/:lessonLink?/:languageCode?',
-      component: () => import('pages/LeadershipTeachings.vue')
-    },
-    {
-      name: 'AskHisFollowers',
-      path: '/questions',
-      component: () => import('src/pages/RestorePage.vue')
-    },
-    ]
+    ],
   },
   // Always leave this as last one,
   // but you can also remove it
   {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
-]
+    path: "/:catchAll(.*)*",
+    component: () => import("pages/ErrorNotFound.vue"),
+  },
+];
 
-export default routes
+export default routes;

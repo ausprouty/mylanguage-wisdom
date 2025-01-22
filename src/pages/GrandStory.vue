@@ -30,7 +30,7 @@ import HisBookPassageSelect from "components/HisBook/HisBookPassageSelect.vue";
 import HisBookSegmentController from "src/components/HisBook/HisBookSegmentController.vue";
 
 export default {
-  name: "HisBook",
+  name: "GrandStory",
   props:{
     lessonLink : Number,
     languageCode: String

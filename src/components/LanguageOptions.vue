@@ -1,6 +1,6 @@
 <template>
   <h4>Select Language</h4>
-  
+
   <q-option-group
     v-model="selectedLanguage"
     type="radio"
@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      selectedLanguage: 'eng00',
+      selectedLanguage: '',
       languageOptions: [],
       languageArray: [],
       languageCodeHL: 'eng00',
@@ -32,7 +32,6 @@ export default {
   watch: {
     selectedLanguage: {
       handler() {
-        this.languageCodeJF=529;
         console.log (this.selectedLanguage + ' was selected');
         for( var i = 0; i < this.languageOptions.length; i++){
           if (this.languageOptions[i].value == this.selectedLanguage){
@@ -57,6 +56,7 @@ export default {
       languageCodeHL: item.languageCodeHL,
       languageCodeJF: item.languageCodeJF,
     }));
+    this.selectedLanguage = this.languageStore.getLanguageValue();
   },
 };
 </script>

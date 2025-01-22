@@ -1,16 +1,19 @@
 <template>
   <q-page padding>
     <div>
-
-      <h2> {{ $t("lead.title") }}</h2>
-      <p>{{ $t("lead.para1") }}</p>
-      <p>{{ $t("lead.para2") }}</p>
-      <p>{{ $t("lead.para3") }}</p>
+      <h2> {{ $t("teach.title") }}</h2>
+      <p>{{ $t("teach.para1") }}</p>
+      <p>{{ $t("teach.para2") }}</p>
+      <p>{{ $t("teach.para3") }}</p>
       <div>
-        <LeadershipPassageSelect   @showTeaching="handleShowTeaching" />
+        <HisTeachingsPassageSelect
+          @showTeaching="handleShowTeaching"
+        />
       </div>
       <div>
-        <LeadershipSegmentController   @showTeaching="handleShowTeaching" />
+        <HisTeachingsSegmentController
+          @showTeaching="handleShowTeaching"
+        />
       </div>
 
       <hr />
@@ -23,18 +26,18 @@
 import { useLanguageStore } from "stores/LanguageStore";
 import { api } from "boot/axios";
 import { useRoute } from 'vue-router'
-import LeadershipPassageSelect from "components/Leadership/LeadershipPassageSelect.vue";
-import LeadershipSegmentController from "src/components/Leadership/LeadershipSegmentController.vue";
+import HisTeachingsPassageSelect from "components/HisTeachings/HisTeachingsPassageSelect.vue";
+import HisTeachingsSegmentController from "src/components/HisTeachings/HisTeachingsSegmentController.vue";
 
 export default {
-  name: "LeadershipTeachings",
+  name: "HisWisdom",
   props:{
     lessonLink : Number,
     languageCode: String
   },
   components: {
-    LeadershipPassageSelect,
-    LeadershipSegmentController,
+    HisTeachingsPassageSelect,
+    HisTeachingsSegmentController,
   },
   data() {
     return {
@@ -45,8 +48,8 @@ export default {
     const languageStore = useLanguageStore();
     const route = useRoute()
     if (route.params.lessonLink !== ''){
-      console.log ('updated leadershipLesson to: '  +  route.params.lessonLink)
-      languageStore.updateLeadershipLesson(route.params.lessonLink);
+      console.log ('updated HisTeachingLesson to: '  +  route.params.lessonLink)
+      languageStore.updateHisTeachingLesson(route.params.lessonLink);
      }
      if (route.params.languageCode !== ''){
       console.log ('updated languagecode to: '  +  route.params.languageCode)
@@ -63,24 +66,27 @@ export default {
     computedLanguage(){
       return this.languageStore.getLanguageSelected;
     },
-    computedLeadershipLesson(){
-      return  this.languageStore.getLeadershipLesson
+    computedTeachingLesson(){
+      return  this.languageStore.getHisTeachingLesson
     }
   },
   watch:{
     computedLanguage(newValue, oldValue){
       this.handleShowTeaching();
     },
-    computedLeadershipLesson(newValue, oldValue){
+    computedTeachingLesson(newValue, oldValue){
       this.handleShowTeaching();
     }
   },
   methods: {
     handleShowTeaching() {
-      var lesson = this.languageStore.getLeadershipLesson
+      var lesson = this.languageStore.getHisTeachingLesson
       var language = this.languageStore.getLanguageCodeHLSelected;
       var url =
-        "api/leadership/view/" + lesson + "/" + language ;
+        "api/life_principles/view/" +
+        lesson +
+        "/" +
+        language;
       console.log(url);
       api.get(url).then((response) => {
         this.text = response.data;
