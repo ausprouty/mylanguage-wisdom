@@ -8,6 +8,9 @@ export const useLanguageStore = defineStore("languageStore", {
     bookLesson: null,
     followingHimSegment: null,
     jVideoSegmentId: null,
+    // you record the languageCodeHL here so you only get
+    // new titles for the Jesus video when
+    // languageSelected.languageCodeHL changes
     jVideoSegments:{
       languageCodeHL: 'eng00',
       languageCodeJF: '529',
