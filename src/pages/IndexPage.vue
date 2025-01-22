@@ -6,19 +6,19 @@
 
     <tr class = "full-width">
       <td class="side-by-side" @click="handleImageClick('/source')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/source.png">
+        <img  class="menu_picture" src="menu/source.webp">
       </td>
       <td class="side-by-side" @click="handleImageClick('/wisdom')" clickable v-ripple >
-        <img  class="menu_picture" src="menu/wisdom2.png">
+        <img  class="menu_picture" src="menu/wisdom.webp">
       </td>
     </tr>
     <tr class = "full-width">
       <td class="side-by-side" @click="handleImageClick('/story')" clickable v-ripple  >
-        <img  class="menu_picture" src="menu/grand2.png">
+        <img  class="menu_picture" src="menu/grand.webp">
       </td>
 
       <td class="side-by-side" @click="openExternalWebsite()" clickable v-ripple >
-          <img class="menu_picture" src="menu/discover.png">
+          <img class="menu_picture" src="menu/discover.webp">
       </td>
     </tr>
   </table>
@@ -51,7 +51,7 @@ export default{
     openExternalWebsite(){
       var url =
         "api/ask/" +
-        this.languageStore.getLanguageSelected
+        this.languageStore.getLanguageCodeHLSelected
       console.log(url);
       api.get(url).then((response) => {
         var externalURL = 'https://www.everyperson.com/contact.php';

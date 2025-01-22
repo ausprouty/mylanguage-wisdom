@@ -11,7 +11,7 @@ const routes = [
       },
       {
         name: "SourceOfWisdom",
-        path: "/life/:lessonLink?/:languageCode?",
+        path: "/source/:lessonLink?/:languageCode?",
         component: () => import("src/pages/SourceOfWisdom.vue"),
       },
       {
@@ -21,10 +21,10 @@ const routes = [
       },
       {
         name: "GrandStory",
-        path: "/grand/:lessonLink?/:languageCode?",
+        path: "/story/:lessonLink?/:languageCode?",
         component: () => import("src/pages/GrandStory.vue"),
       },
-      
+
       {
         name: "AskHisFollowers",
         path: "/questions",

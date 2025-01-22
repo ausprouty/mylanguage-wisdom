@@ -14,7 +14,7 @@ export default {
 
   life:{
     title:'The Source of Wisdom',
-    para1:'As you watch the video, ask yourself "What did Jesus do and teach?  How is his wisdom different from what others have said."',
+    para1:'Jesus is the source of eternal wisdom. As you watch the video, ask yourself "What did Jesus do and teach?  How is his wisdom different from what others have said."',
     para2:'This video is available in many languages. To change the language click the world globe above.'
   },
   teach:{
