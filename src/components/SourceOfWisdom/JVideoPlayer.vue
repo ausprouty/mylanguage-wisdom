@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { api } from "boot/axios";
+import { legacyApi, currentApi } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
 
 export default {
@@ -24,8 +24,8 @@ export default {
       languageStore,
     };
   },
-  created(){
-    this.updateVideoShown()
+  created() {
+    this.updateVideoShown();
   },
   watch: {
     languageCodeHL: function (newLanguage, oldLanguage) {
@@ -51,31 +51,35 @@ export default {
     },
   },
   methods: {
-    updateVideoShown(){
+    updateVideoShown() {
       var segments = this.languageStore.getJVideoSegments;
-     // console.log ('this is segments')
-    //  console.log (segments)
-      if (segments == null || typeof segments == 'undefined'){
-       // console.log ('I am getting new JV segments because there are not any')
+      // console.log ('this is segments')
+      //  console.log (segments)
+      if (segments == null || typeof segments == "undefined") {
+        // console.log ('I am getting new JV segments because there are not any')
         this.getNewJVideoSegments();
       }
-      if (segments.languageCodeHL != this.languageStore.getLanguageCodeHLSelected){
-       // console.log ('I am getting new JV segments because language changed')
+      if (
+        segments.languageCodeHL != this.languageStore.getLanguageCodeHLSelected
+      ) {
+        // console.log ('I am getting new JV segments because language changed')
         this.getNewJVideoSegments();
-      }
-      else{
-       // console.log ('I am NOT getting new JV segments because we have them')
+      } else {
+        // console.log ('I am NOT getting new JV segments because we have them')
         this.updateVideoIframe();
       }
     },
-    getNewJVideoSegments(){
+    getNewJVideoSegments() {
       var url =
-        "api/jvideo/segments/" + this.languageCodeHL + "/" + this.languageCodeJF
+        "api/jvideo/segments/" +
+        this.languageCodeHL +
+        "/" +
+        this.languageCodeJF;
       console.log(url);
-      api.get(url).then((response) => {
+      legacyApi.get(url).then((response) => {
         this.segments = response.data;
-        console.log (this.segments)
-        console.log (this.languageCodeHL+ '  ' + this.languageCodeJF)
+        console.log(this.segments);
+        console.log(this.languageCodeHL + "  " + this.languageCodeJF);
         this.languageStore.updateJVideoSegments(
           this.languageCodeHL,
           this.languageCodeJF,
@@ -85,19 +89,19 @@ export default {
       });
     },
     updateVideoIframe() {
-
-      var videoSegmentId = this.videoSegmentId
-      if ( videoSegmentId == null || typeof videoSegmentId == 'undefined'){
-        videoSegmentId  = 1
+      var videoSegmentId = this.videoSegmentId;
+      if (videoSegmentId == null || typeof videoSegmentId == "undefined") {
+        videoSegmentId = 1;
       }
-      console.log ('videosegmentid ' + videoSegmentId);
-      var videoSource = 'src="https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6101-0-0&start=0&end=&playerStyle=default"'
+      console.log("videosegmentid " + videoSegmentId);
+      var videoSource =
+        'src="https://legacyApi.arclight.org/videoPlayerUrl?refId=1_529-jf6101-0-0&start=0&end=&playerStyle=default"';
       var segments = this.languageStore.getJVideoSegments;
       //console.log (segments.segments);
       for (var i = 0; i < segments.segments.length; i++) {
         if (segments.segments[i].id == videoSegmentId) {
           videoSource = segments.segments[i].src;
-          console.log (videoSource)
+          console.log(videoSource);
           break;
         }
       }

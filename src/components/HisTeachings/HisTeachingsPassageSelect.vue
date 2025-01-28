@@ -1,5 +1,5 @@
 <template>
-   <div>
+  <div>
     <q-select
       filled
       v-model="selectedValue"
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { api } from "boot/axios";
+import { legacyApi, currentApi } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
   name: "HisTeachingsPassageSelect",
@@ -27,12 +27,11 @@ export default {
   },
   data() {
     return {
-      selectedValue : {
+      selectedValue: {
         value: 1,
-        label: 'SELECT'
+        label: "SELECT",
       },
       lessons: [],
-
     };
   },
   watch: {
@@ -45,10 +44,10 @@ export default {
       if (newLesson !== oldLesson) {
         this.updateSelectBar(newLesson);
       }
-    }
+    },
   },
   computed: {
-    languageCodeHL(){
+    languageCodeHL() {
       return this.languageStore.getLanguageCodeHLSelected;
     },
     currentSegment() {
@@ -61,9 +60,9 @@ export default {
   methods: {
     getLessonList(languageCodeHL) {
       var url = "api/life_principles/studies/" + languageCodeHL;
-      console.log (url)
-      api.get(url).then((response) => {
-        var data = response.data
+      console.log(url);
+      legacyApi.get(url).then((response) => {
+        var data = response.data;
         this.lessons = data.map((item) => ({
           label: item.title,
           value: item.lesson,
@@ -74,27 +73,23 @@ export default {
     },
     updateLesson() {
       this.languageStore.updateHisTeachingLesson(this.selectedValue.value);
-      this.$emit('showTeaching', this.selectedValue.value)
+      this.$emit("showTeaching", this.selectedValue.value);
     },
-    updateSelectBar(key){
-      key = key-1;
-      if (key >= 0){
+    updateSelectBar(key) {
+      key = key - 1;
+      if (key >= 0) {
         this.selectedValue.label = this.lessons[key].label;
         this.selectedValue.value = this.lessons[key].value;
-      }
-      else{
-        this.selectedValue.label = 'SELECT';
+      } else {
+        this.selectedValue.label = "SELECT";
         this.selectedValue.value = 1;
       }
     },
-  }
-
+  },
 };
 </script>
 <style scoped>
-
-.q-item__label{
-  color:black;
+.q-item__label {
+  color: black;
 }
 </style>
-

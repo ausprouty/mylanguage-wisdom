@@ -1,12 +1,11 @@
 <template>
-  <div v-html = "this.questions" >
-  </div>
+  <div v-html="this.questions"></div>
 </template>
 <script>
-import { api } from "boot/axios";
+import { legacyApi, currentApi } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
-  name: 'JVideoQuestions',
+  name: "JVideoQuestions",
   setup() {
     const languageStore = useLanguageStore();
     return {
@@ -16,7 +15,7 @@ export default {
 
   data() {
     return {
-      questions : '',
+      questions: "",
     };
   },
   watch: {
@@ -24,27 +23,25 @@ export default {
       if (newLanguage !== oldLanguage) {
         this.showQuestions(newLanguage);
       }
-    }
+    },
   },
-  computed:{
+  computed: {
     languageCodeHL() {
       return this.languageStore.getLanguageCodeHLSelected;
     },
   },
-  methods:{
-    showQuestions(languageCodeHL){
-      var url = 'api/jvideo/questions/'+ languageCodeHL
-      console.log (url)
-      api.get(url).then((response) => {
-        console.log (response)
+  methods: {
+    showQuestions(languageCodeHL) {
+      var url = "api/jvideo/questions/" + languageCodeHL;
+      console.log(url);
+      legacyApi.get(url).then((response) => {
+        console.log(response);
         this.questions = response.data;
       });
-    }
-
+    },
   },
- created(){
-  this.showQuestions(this.languageCodeHL)
- }
-
-}
+  created() {
+    this.showQuestions(this.languageCodeHL);
+  },
+};
 </script>

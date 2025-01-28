@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { api } from "boot/axios";
+import { legacyApi, currentApi } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
   name: "JVideoSegmentSelect",
@@ -39,7 +39,7 @@ export default {
   watch: {
     languageCodeHL: function (newLanguage, oldLanguage) {
       if (newLanguage !== oldLanguage) {
-        this.getSegmentList(newLanguage );
+        this.getSegmentList(newLanguage);
       }
     },
     currentSegmentId: function (newLesson, oldLesson) {
@@ -62,31 +62,31 @@ export default {
   created() {
     this.getSegmentList(this.languageCodeHL);
     this.selectedValue.id = this.currentSegmentId;
-    console.log ('created with ' + this.selectedValue.id)
+    console.log("created with " + this.selectedValue.id);
     this.updateLesson();
   },
   methods: {
     getSegmentList(languageCodeHL) {
-      console.log (languageCodeHL + "in JVideoSegmentSelect")
+      console.log(languageCodeHL + "in JVideoSegmentSelect");
       var url =
         "api/jvideo/segments/" + languageCodeHL + "/" + this.languageCodeJF;
       console.log(url);
-      api.get(url).then((response) => {
+      legacyApi.get(url).then((response) => {
         this.segments = response.data;
-        console.log (this.segments)
-        var languageCodeHL = 529
-        console.log (languageCodeHL)
+        console.log(this.segments);
+        var languageCodeHL = 529;
+        console.log(languageCodeHL);
         this.languageStore.updateJVideoSegments(
           languageCodeHL,
           this.languageCodeJF,
           this.segments
         );
-        console.log (languageCodeHL)
+        console.log(languageCodeHL);
         this.updateSelectBar(this.currentSegmentId);
       });
     },
     updateLesson() {
-      console.log (this.selectedValue)
+      console.log(this.selectedValue);
       this.languageStore.updateJVideoSegmentId(this.selectedValue.id);
       this.$emit("showVideo", this.selectedValue.id);
     },

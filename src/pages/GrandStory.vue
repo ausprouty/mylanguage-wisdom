@@ -1,19 +1,15 @@
 <template>
   <q-page padding>
-    <h2> {{ $t("book.title") }}</h2>
-      <p>{{ $t("book.para1") }}</p>
-      <p>{{ $t("book.para2") }}</p>
-      <p>{{ $t("book.para3") }}</p>
+    <h2>{{ $t("book.title") }}</h2>
+    <p>{{ $t("book.para1") }}</p>
+    <p>{{ $t("book.para2") }}</p>
+    <p>{{ $t("book.para3") }}</p>
     <div>
       <div>
-        <HisBookPassageSelect
-          @showPassage="handleShowTeaching"
-        />
+        <HisBookPassageSelect @showPassage="handleShowTeaching" />
       </div>
       <div>
-        <HisBookSegmentController
-          @showTeaching="handleShowTeaching"
-        />
+        <HisBookSegmentController @showTeaching="handleShowTeaching" />
       </div>
       <hr />
       <div v-html="this.text"></div>
@@ -23,17 +19,17 @@
 
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
-import { api } from "boot/axios";
-import { useRoute } from 'vue-router'
+import { legacyApi, currentApi } from "boot/axios";
+import { useRoute } from "vue-router";
 
 import HisBookPassageSelect from "components/HisBook/HisBookPassageSelect.vue";
 import HisBookSegmentController from "src/components/HisBook/HisBookSegmentController.vue";
 
 export default {
   name: "GrandStory",
-  props:{
-    lessonLink : Number,
-    languageCode: String
+  props: {
+    lessonLink: Number,
+    languageCode: String,
   },
   components: {
     HisBookPassageSelect,
@@ -42,59 +38,76 @@ export default {
   data() {
     return {
       text: "",
+      textBlocks: {
+        dbsBack: "",
+        dbsUp: "",
+        dbsForward: "",
+      },
     };
+  },
+  mounted() {
+    // Load text blocks from localStorage based on lesson
+    this.textBlocks.dbsBack =
+      localStorage.getItem(`dbs-${this.lesson}-back`) || "";
+    this.textBlocks.dbsUp = localStorage.getItem(`dbs-${this.lesson}-up`) || "";
+    this.textBlocks.dbsForward =
+      localStorage.getItem(`dbs-${this.lesson}-forward`) || "";
   },
   setup() {
     const languageStore = useLanguageStore();
-    const route = useRoute()
-    if (route.params.lessonLink !== ''){
+    const route = useRoute();
+    if (route.params.lessonLink !== "") {
       languageStore.updateBookLesson(route.params.lessonLink);
-     }
-     if (route.params.languageCode !== ''){
+    }
+    if (route.params.languageCode !== "") {
       languageStore.updateLanguageSelected(route.params.languageCode);
-     }
+    }
     return {
       languageStore,
     };
   },
-  created(){
-    this.handleShowTeaching()
+  created() {
+    this.handleShowTeaching();
   },
-  computed:{
-    computedLanguage(){
+  computed: {
+    computedLanguage() {
       return this.languageStore.getLanguageSelected;
     },
-    computedBookLesson(){
-      return  this.languageStore.getBookLesson
-    }
+    computedBookLesson() {
+      return this.languageStore.getBookLesson;
+    },
   },
-  watch:{
-    computedLanguage(newValue, oldValue){
+  watch: {
+    computedLanguage(newValue, oldValue) {
       this.handleShowTeaching();
     },
-    computedBookLesson(newValue, oldValue){
+    computedBookLesson(newValue, oldValue) {
       this.handleShowTeaching();
-    }
+    },
   },
   methods: {
-
     handleShowTeaching() {
-      var lesson = this.languageStore.getBookLesson
+      var lesson = this.languageStore.getBookLesson;
       var language = this.languageStore.getLanguageCodeHLSelected;
-      var url =
-        "api/dbs/view/" +
-        lesson +
-        "/" +
-        language;
+      var url = "api/dbs/view/" + lesson + "/" + language;
       console.log(url);
-      api.get(url).then((response) => {
+      legacyApi.get(url).then((response) => {
         this.text = response.data;
       });
+    },
+    saveToLocalStorage(position) {
+      alert(position);
+      // Save to localStorage based on position (back, up, forward)
+      const key = `dbs-${this.lesson}-${position}`;
+      localStorage.setItem(
+        key,
+        this.textBlocks[
+          `dbs${position.charAt(0).toUpperCase() + position.slice(1)}`
+        ]
+      );
     },
   },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

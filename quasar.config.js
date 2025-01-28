@@ -50,6 +50,9 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
+      vueLoaderOptions: {
+        runtimeCompiler: true, // Enable Vue runtime compiler for DBS
+      },
       target: {
         browser: ["es2019", "edge88", "firefox78", "chrome87", "safari13.1"],
         node: "node16",
@@ -71,10 +74,13 @@ module.exports = configure(function (ctx) {
               .loader('@intlify/vue-i18n-loader')
       },
       env: {
-        API: ctx.dev
-          ? "http://localhost/mylanguage-namespaced/"
-          //:// "http://localhost/mylanguage-namespaced/"
-         : "https://api.mylanguage.net.au/",
+        LEGACY_API: ctx.dev
+          ? "http://localhost/mylanguage-legacy/" // Legacy API in development
+          : "https://legacy-api.mylanguage.net.au/", // Legacy API in production
+
+        CURRENT_API: ctx.dev
+          ? "http://localhost/mylanguage-current/" // Current API in development
+          : "https://api.mylanguage.net.au/", // Current API in production
       },
 
       vueRouterMode: "history", // available values: 'hash', 'history'
@@ -169,6 +175,38 @@ module.exports = configure(function (ctx) {
       swFilename: "sw.js",
       manifestFilename: "manifest.json",
       useCredentialsForManifestTag: false,
+      display: "standalone",
+      orientation: "portrait",
+      background_color: "#ffffff",
+      theme_color: "#027be3",
+      start_url:"/index",
+      icons: [
+        {
+          src: "icons/icon-128x128.png",
+          sizes: "128x128",
+          type: "image/png",
+        },
+        {
+          src: "icons/icon-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "icons/icon-256x256.png",
+          sizes: "256x256",
+          type: "image/png",
+        },
+        {
+          src: "icons/icon-384x384.png",
+          sizes: "384x384",
+          type: "image/png",
+        },
+        {
+          src: "icons/icon-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+      ],
       // useFilenameHashes: true,
       // extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},

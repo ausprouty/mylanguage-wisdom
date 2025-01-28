@@ -1,19 +1,16 @@
 <template>
   <q-page padding>
     <div>
-      <h2> {{ $t("teach.title") }}</h2>
+      <h2>{{ $t("teach.title") }}</h2>
       <p>{{ $t("teach.para1") }}</p>
       <p>{{ $t("teach.para2") }}</p>
       <p>{{ $t("teach.para3") }}</p>
+      <p>{{ $t("teach.para4") }}</p>
       <div>
-        <HisTeachingsPassageSelect
-          @showTeaching="handleShowTeaching"
-        />
+        <HisTeachingsPassageSelect @showTeaching="handleShowTeaching" />
       </div>
       <div>
-        <HisTeachingsSegmentController
-          @showTeaching="handleShowTeaching"
-        />
+        <HisTeachingsSegmentController @showTeaching="handleShowTeaching" />
       </div>
 
       <hr />
@@ -24,16 +21,16 @@
 
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
-import { api } from "boot/axios";
-import { useRoute } from 'vue-router'
+import { legacyApi, currentApi } from "boot/axios";
+import { useRoute } from "vue-router";
 import HisTeachingsPassageSelect from "components/HisTeachings/HisTeachingsPassageSelect.vue";
 import HisTeachingsSegmentController from "src/components/HisTeachings/HisTeachingsSegmentController.vue";
 
 export default {
   name: "HisWisdom",
-  props:{
-    lessonLink : Number,
-    languageCode: String
+  props: {
+    lessonLink: Number,
+    languageCode: String,
   },
   components: {
     HisTeachingsPassageSelect,
@@ -46,49 +43,45 @@ export default {
   },
   setup() {
     const languageStore = useLanguageStore();
-    const route = useRoute()
-    if (route.params.lessonLink !== ''){
-      console.log ('updated HisTeachingLesson to: '  +  route.params.lessonLink)
+    const route = useRoute();
+    if (route.params.lessonLink !== "") {
+      console.log("updated HisTeachingLesson to: " + route.params.lessonLink);
       languageStore.updateHisTeachingLesson(route.params.lessonLink);
-     }
-     if (route.params.languageCode !== ''){
-      console.log ('updated languagecode to: '  +  route.params.languageCode)
+    }
+    if (route.params.languageCode !== "") {
+      console.log("updated languagecode to: " + route.params.languageCode);
       languageStore.updateLanguageCodeHLSelected(route.params.languageCode);
-     }
+    }
     return {
       languageStore,
     };
   },
-  created(){
-    this.handleShowTeaching()
+  created() {
+    this.handleShowTeaching();
   },
-  computed:{
-    computedLanguage(){
+  computed: {
+    computedLanguage() {
       return this.languageStore.getLanguageSelected;
     },
-    computedTeachingLesson(){
-      return  this.languageStore.getHisTeachingLesson
-    }
+    computedTeachingLesson() {
+      return this.languageStore.getHisTeachingLesson;
+    },
   },
-  watch:{
-    computedLanguage(newValue, oldValue){
+  watch: {
+    computedLanguage(newValue, oldValue) {
       this.handleShowTeaching();
     },
-    computedTeachingLesson(newValue, oldValue){
+    computedTeachingLesson(newValue, oldValue) {
       this.handleShowTeaching();
-    }
+    },
   },
   methods: {
     handleShowTeaching() {
-      var lesson = this.languageStore.getHisTeachingLesson
+      var lesson = this.languageStore.getHisTeachingLesson;
       var language = this.languageStore.getLanguageCodeHLSelected;
-      var url =
-        "api/life_principles/view/" +
-        lesson +
-        "/" +
-        language;
+      var url = "api/life_principles/view/" + lesson + "/" + language;
       console.log(url);
-      api.get(url).then((response) => {
+      legacyApi.get(url).then((response) => {
         this.text = response.data;
       });
     },
