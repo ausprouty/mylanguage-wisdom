@@ -22,7 +22,7 @@
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
-  name: "HisBookSegmentController",
+  name: "GrandStorySegmentController",
   data() {
     return {
       minSegment: 1,

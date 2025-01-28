@@ -75,11 +75,11 @@ module.exports = configure(function (ctx) {
       },
       env: {
         LEGACY_API: ctx.dev
-          ? "http://localhost/mylanguage-legacy/" // Legacy API in development
+          ? "http://localhost/mylanguage-namespaced/" // Legacy API in development
           : "https://legacy-api.mylanguage.net.au/", // Legacy API in production
 
         CURRENT_API: ctx.dev
-          ? "http://localhost/mylanguage-current/" // Current API in development
+          ? "http://localhost/api_mylanguage/" // Current API in development
           : "https://api.mylanguage.net.au/", // Current API in production
       },
 

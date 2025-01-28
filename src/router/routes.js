@@ -21,8 +21,13 @@ const routes = [
       },
       {
         name: "GrandStory",
-        path: "/story/:lessonLink?/:languageCode?",
+        path: "/storyOld/:lessonLink?/:languageCode?",
         component: () => import("src/pages/GrandStory.vue"),
+      },
+      {
+        name: "GrandStoryInteractive",
+        path: "/story/:lessonLink?/:languageCode?",
+        component: () => import("src/pages/GrandStoryInteractive.vue"),
       },
 
       {

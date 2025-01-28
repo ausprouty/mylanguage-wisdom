@@ -12,7 +12,7 @@
         <GrandStorySegmentController @showTeaching="handleShowTeaching" />
       </div>
       <hr />
-      <div v-html="this.text"></div>
+      <GrandStoryStudy @showTeaching="handleShowTeaching" />
     </div>
   </q-page>
 </template>
@@ -24,6 +24,7 @@ import { useRoute } from "vue-router";
 
 import GrandStoryPassageSelect from "components/GrandStory/GrandStoryPassageSelect.vue";
 import GrandStorySegmentController from "src/components/GrandStory/GrandStorySegmentController.vue";
+import GrandStoryStudy from "src/components/GrandStory/GrandStoryStudy.vue";
 
 export default {
   name: "GrandStory",
@@ -34,6 +35,7 @@ export default {
   components: {
     GrandStoryPassageSelect,
     GrandStorySegmentController,
+    GrandStoryStudy,
   },
   data() {
     return {
@@ -87,10 +89,8 @@ export default {
   },
   methods: {
     handleShowTeaching() {
+      console.log (legacyApi)
       var lesson = this.languageStore.getBookLesson;
-      if (isNaN(lesson)){
-        lesson = 1
-      }
       var language = this.languageStore.getLanguageCodeHLSelected;
       var url = "api/dbs/view/" + lesson + "/" + language;
       console.log(url);

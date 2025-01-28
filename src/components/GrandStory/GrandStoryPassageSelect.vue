@@ -17,7 +17,7 @@
 import { legacyApi, currentApi } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
-  name: "HisBookPassageSelect",
+  name: "GrandStoryPassageSelect",
   setup() {
     const languageStore = useLanguageStore();
     return {
