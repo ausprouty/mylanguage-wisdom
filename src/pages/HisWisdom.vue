@@ -78,6 +78,9 @@ export default {
   methods: {
     handleShowTeaching() {
       var lesson = this.languageStore.getHisTeachingLesson;
+      if (isNaN(lesson)){
+        lesson = 1;
+      }
       var language = this.languageStore.getLanguageCodeHLSelected;
       var url = "api/life_principles/view/" + lesson + "/" + language;
       console.log(url);

@@ -22,7 +22,7 @@ import { useLanguageStore } from "stores/LanguageStore";
 import { legacyApi, currentApi } from "boot/axios";
 import { useRoute } from "vue-router";
 
-import GrandStoryPassageSelect from "components/GrandStory/GrandStoryPassageSelect.vue";
+import GrandStoryPassageSelect from "src/components/GrandStory/GrandStoryPassageSelect.vue";
 import GrandStorySegmentController from "src/components/GrandStory/GrandStorySegmentController.vue";
 import GrandStoryStudy from "src/components/GrandStory/GrandStoryStudy.vue";
 
@@ -47,14 +47,7 @@ export default {
       },
     };
   },
-  mounted() {
-    // Load text blocks from localStorage based on lesson
-    this.textBlocks.dbsBack =
-      localStorage.getItem(`dbs-${this.lesson}-back`) || "";
-    this.textBlocks.dbsUp = localStorage.getItem(`dbs-${this.lesson}-up`) || "";
-    this.textBlocks.dbsForward =
-      localStorage.getItem(`dbs-${this.lesson}-forward`) || "";
-  },
+
   setup() {
     const languageStore = useLanguageStore();
     const route = useRoute();
@@ -71,6 +64,7 @@ export default {
   created() {
     this.handleShowTeaching();
   },
+
   computed: {
     computedLanguage() {
       return this.languageStore.getLanguageSelected;

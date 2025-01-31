@@ -1,11 +1,11 @@
 <template>
   <!-- Render Reactively Instead of Using v-html -->
-  <div v-if="parsedContent">
-    <h1 v-html="parsedContent.title" class="title dbs"></h1>
+  <div v-if="commonContent">
+    <h1 v-html="commonContent.title" class="title dbs"></h1>
 
-    <h2 v-html="parsedContent.lookBack.title" class="ltr dbs"></h2>
+    <h2 v-html="commonContent.lookBack.title" class="ltr dbs"></h2>
     <ol class="ltr dbs">
-      <li v-for="(item, index) in parsedContent.lookBack.questions" :key="'back-' + index" v-html="item"></li>
+      <li v-for="(item, index) in commonContent.lookBack.questions" :key="'back-' + index" v-html="item"></li>
     </ol>
     <textarea
       class="dbs-back notes"
@@ -14,9 +14,9 @@
       placeholder="Write your notes for Look Back here"
     ></textarea>
 
-    <h2 v-html="parsedContent.lookUp.title" class="ltr dbs"></h2>
+    <h2 v-html="commonContent.lookUp.title" class="ltr dbs"></h2>
     <ol class="ltr dbs">
-      <li v-for="(item, index) in parsedContent.lookUp.questions" :key="'up-' + index" v-html="item"></li>
+      <li v-for="(item, index) in commonContent.lookUp.questions" :key="'up-' + index" v-html="item"></li>
     </ol>
     <textarea
       class="dbs-up notes"
@@ -25,9 +25,9 @@
       placeholder="Write your notes for Look Up here"
     ></textarea>
 
-    <h2 v-html="parsedContent.lookForward.title" class="ltr dbs"></h2>
+    <h2 v-html="commonContent.lookForward.title" class="ltr dbs"></h2>
     <ol class="ltr dbs">
-      <li v-for="(item, index) in parsedContent.lookForward.questions" :key="'forward-' + index" v-html="item"></li>
+      <li v-for="(item, index) in commonContent.lookForward.questions" :key="'forward-' + index" v-html="item"></li>
     </ol>
     <textarea
       class="dbs-forward notes"
@@ -55,7 +55,7 @@ export default {
   data() {
     return {
       text: "",
-      parsedContent: null, // Reactive object for parsed content
+      commonContent: null, // Reactive object for parsed content
       textBlocks: {
         dbsBack: "",
         dbsUp: "",
@@ -83,17 +83,32 @@ export default {
       languageStore,
     };
   },
-  created() {
+  async created() {
+    const languageStore = useLanguageStore();
+    alert ('looking for commonContent')
+    // Load common content and assign it to a local variable
+    this.commonContent = await languageStore.loadCommonContent(this.language, this.study);
+    console.log (this.commonContent);
+    alert('found content')
     this.handleShowTeaching();
+
   },
   methods: {
+    getQuestions(){
+      const language = this.languageStore.getLanguageCodeHLSelected;
+      const url = `api/translate/questions/dbsStructured/${language}`;
+      currentApi.get(url).then((response) => {
+        console.log (response)
+        this.commonContent = this.parseContent(response.data);
+      });
+    },
     handleShowTeaching() {
       const lesson = this.languageStore.getBookLesson;
       const language = this.languageStore.getLanguageCodeHLSelected;
-      const url = `api/dbs/json/${lesson}/${language}`;
+      const url = `api/translate/questions/dbsStructured/${language}`;
       currentApi.get(url).then((response) => {
         this.text = response.data;
-        this.parsedContent = this.parseContent(response.data);
+        this.commonContent = this.parseContent(response.data);
       });
     },
     parseContent(htmlString) {

@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
+import { getCommonContent } from 'src/services/TranslationService';
 
 export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
-
+    commonContent: {}, // Will store content by language and study
     hisTeachingLesson:null,
     leadershipLesson: null,
     bookLesson: null,
@@ -109,6 +110,20 @@ export const useLanguageStore = defineStore("languageStore", {
   },
 
   actions :{
+    async loadCommonContent(language, study) {
+      // Avoid re-fetching if the content is already loaded
+      if (this.commonContent[language]?.[study]) {
+        return this.commonContent[language][study];
+      }
+      // Fetch commonContent from service
+      const content = await getCommonContent(language, study);
+      // Store it in the state
+      if (!this.commonContent[language]) {
+        this.commonContent[language] = {};
+      }
+      this.commonContent[language][study] = content;
+      return content;
+    },
     updateBookLesson(newValue) {
       if (newValue > 0 && newValue < 24){
         localStorage.setItem('bookLesson', newValue);
