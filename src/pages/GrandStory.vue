@@ -99,7 +99,7 @@ export default {
       });
     },
     saveToLocalStorage(position) {
-      alert(position);
+      alert( 'position :' + position);
       // Save to localStorage based on position (back, up, forward)
       const key = `dbs-${this.lesson}-${position}`;
       localStorage.setItem(

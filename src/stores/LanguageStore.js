@@ -4,9 +4,9 @@ import { getCommonContent } from 'src/services/TranslationService';
 export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
     commonContent: {}, // Will store content by language and study
-    hisTeachingLesson:null,
+    lifeLesson:null,
     leadershipLesson: null,
-    bookLesson: null,
+    grandStoryLesson: null,
     followingHimSegment: null,
     jVideoSegmentId: null,
     // you record the languageCodeHL here so you only get
@@ -26,11 +26,11 @@ export const useLanguageStore = defineStore("languageStore", {
     previousPage: '/index'
   }),
   getters: {
-    getBookLesson: (state) => {
-      if (state.bookLesson == null || typeof state.bookLesson == 'undefined'){
-        state.bookLesson = localStorage.getItem("bookLesson", 1)
+    getDbsLesson: (state) => {
+      if (state.dbsLesson == null || typeof state.dbsLesson == 'undefined'){
+        state.dbsLesson = localStorage.getItem("dbsLesson", 1)
       }
-      return state.bookLesson
+      return parseInt(state.dbsLesson,10)
     },
     getFollowingHimSegment: (state) => {
       if (state.followingHimSegment  == null || typeof state.followingHimSegment == 'undefined'){
@@ -38,11 +38,11 @@ export const useLanguageStore = defineStore("languageStore", {
       }
       return state.followingHimSegment
     },
-    getHisTeachingLesson: (state) => {
-      if (state.hisTeachingLesson == null || typeof state.hisTeachingLesson == 'undefined'){
-        state.hisTeachingLesson = localStorage.getItem("hisTeachingLesson", 1)
+    getLifeLesson: (state) => {
+      if (state.lifeLesson == null || typeof state.lifeLesson == 'undefined'){
+        state.lifeLesson = localStorage.getItem("lifeLesson", 1)
       }
-      return state.hisTeachingLesson
+      return state.lifeLesson
     },
 
     getJVideoSegmentId: (state) => {
@@ -65,12 +65,28 @@ export const useLanguageStore = defineStore("languageStore", {
       return state.jVideoSegments
     },
     getLanguageCodeHLSelected: (state) => {
-      if (state.languageSelected == null){
-        var local = localStorage.getItem("languageSelected", '{"languageSelected":{"languageCodeHL":"eng00","languageCodeJF":529}}');
-          state.languageSelected = JSON.parse(local)
+      if (!state.languageSelected) {
+        // Attempt to retrieve from localStorage or fall back to the default
+        let local = localStorage.getItem("languageSelected");
+
+        if (local) {
+          try {
+            state.languageSelected = JSON.parse(local);
+          } catch (e) {
+            console.error("Failed to parse languageSelected from localStorage", e);
+            // Set default if parsing fails
+            state.languageSelected = { languageCodeHL: 'eng00' };
+          }
+        } else {
+          // Set default if nothing is found in localStorage
+          state.languageSelected = { languageCodeHL: 'eng00',"languageCodeJF":529 };
+        }
       }
-      console.log ('getLanguageCodeHLSelected says ' + state.languageSelected.languageCodeHL)
-      return state.languageSelected.languageCodeHL
+
+      // Ensure a valid return value
+      const languageCodeHL = state.languageSelected?.languageCodeHL || 'eng00';
+      console.log('getLanguageCodeHLSelected says ' + languageCodeHL);
+      return languageCodeHL;
     },
 
     getLanguageCodeJFSelected: (state) => {
@@ -124,10 +140,10 @@ export const useLanguageStore = defineStore("languageStore", {
       this.commonContent[language][study] = content;
       return content;
     },
-    updateBookLesson(newValue) {
+    updateDbsLesson(newValue) {
       if (newValue > 0 && newValue < 24){
-        localStorage.setItem('bookLesson', newValue);
-        this.bookLesson = newValue;
+        localStorage.setItem('dbsLesson', newValue);
+        this.dbsLesson = newValue;
       }
 
     },
@@ -135,10 +151,10 @@ export const useLanguageStore = defineStore("languageStore", {
       localStorage.setItem('followingHimSegment', newValue);
       this.followingHimSegment = newValue;
     },
-    updateHisTeachingLesson(newValue) {
+    updateLifeLesson(newValue) {
       if (newValue > 0 &&  newValue < 24){
-        localStorage.setItem('hisTeachingLesson', newValue);
-        this.hisTeachingLesson = newValue;
+        localStorage.setItem('lifeLesson', newValue);
+        this.lifeLesson = newValue;
       }
 
     },

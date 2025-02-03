@@ -1,11 +1,11 @@
 <template>
   <!-- Render Reactively Instead of Using v-html -->
   <div v-if="commonContent">
-    <h1 v-html="commonContent.title" class="title dbs"></h1>
+    <h1 v-html="studyContent.title" class="title dbs"></h1>
 
-    <h2 v-html="commonContent.lookBack.title" class="ltr dbs"></h2>
+    <h2 v-html="commonContent.look_back.title" class="ltr dbs"></h2>
     <ol class="ltr dbs">
-      <li v-for="(item, index) in commonContent.lookBack.questions" :key="'back-' + index" v-html="item"></li>
+      <li v-for="(item, index) in commonContent.look_back.question" :key="'back-' + index" v-html="item"></li>
     </ol>
     <textarea
       class="dbs-back notes"
@@ -14,9 +14,9 @@
       placeholder="Write your notes for Look Back here"
     ></textarea>
 
-    <h2 v-html="commonContent.lookUp.title" class="ltr dbs"></h2>
+    <h2 v-html="commonContent.look_up.title" class="ltr dbs"></h2>
     <ol class="ltr dbs">
-      <li v-for="(item, index) in commonContent.lookUp.questions" :key="'up-' + index" v-html="item"></li>
+      <li v-for="(item, index) in commonContent.look_up.question" :key="'up-' + index" v-html="item"></li>
     </ol>
     <textarea
       class="dbs-up notes"
@@ -25,9 +25,9 @@
       placeholder="Write your notes for Look Up here"
     ></textarea>
 
-    <h2 v-html="commonContent.lookForward.title" class="ltr dbs"></h2>
+    <h2 v-html="commonContent.look_forward.title" class="ltr dbs"></h2>
     <ol class="ltr dbs">
-      <li v-for="(item, index) in commonContent.lookForward.questions" :key="'forward-' + index" v-html="item"></li>
+      <li v-for="(item, index) in commonContent.look_forward.question" :key="'forward-' + index" v-html="item"></li>
     </ol>
     <textarea
       class="dbs-forward notes"
@@ -61,83 +61,48 @@ export default {
         dbsUp: "",
         dbsForward: "",
       },
+      studyContent:{
+        title: 'Your Study',
+        bibleBlock: 'Bible Block'
+      }
     };
   },
-  mounted() {
-    // Load text blocks from localStorage based on lesson
-    const lesson = this.languageStore.getBookLesson;
-    this.textBlocks.dbsBack = localStorage.getItem(`dbs-${lesson}-back`) || "";
-    this.textBlocks.dbsUp = localStorage.getItem(`dbs-${lesson}-up`) || "";
-    this.textBlocks.dbsForward = localStorage.getItem(`dbs-${lesson}-forward`) || "";
-  },
-  setup() {
+
+  setup() { // no access to this.
     const languageStore = useLanguageStore();
     const route = useRoute();
-    if (route.params.lessonLink !== "") {
-      languageStore.updateBookLesson(route.params.lessonLink);
+    if (route.params.lessonLink) {
+      languageStore.updateGrandStoryLesson(route.params.lessonLink);
     }
-    if (route.params.languageCode !== "") {
+    if (route.params.languageCode) {
       languageStore.updateLanguageSelected(route.params.languageCode);
     }
     return {
       languageStore,
     };
   },
+
   async created() {
-    const languageStore = useLanguageStore();
-    alert ('looking for commonContent')
-    // Load common content and assign it to a local variable
-    this.commonContent = await languageStore.loadCommonContent(this.language, this.study);
-    console.log (this.commonContent);
-    alert('found content')
-    this.handleShowTeaching();
-
+    try {
+      await this.loadContent();
+    } catch (error) {
+      console.error('Error in created hook:', error);
+      alert(`Error loading content: ${error.message}`);
+    }
   },
-  methods: {
-    getQuestions(){
-      const language = this.languageStore.getLanguageCodeHLSelected;
-      const url = `api/translate/questions/dbsStructured/${language}`;
-      currentApi.get(url).then((response) => {
-        console.log (response)
-        this.commonContent = this.parseContent(response.data);
-      });
-    },
-    handleShowTeaching() {
-      const lesson = this.languageStore.getBookLesson;
-      const language = this.languageStore.getLanguageCodeHLSelected;
-      const url = `api/translate/questions/dbsStructured/${language}`;
-      currentApi.get(url).then((response) => {
-        this.text = response.data;
-        this.commonContent = this.parseContent(response.data);
-      });
-    },
-    parseContent(htmlString) {
-      // Parse the HTML string into a structured object for rendering
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlString, "text/html");
 
-      return {
-        title: doc.querySelector("h1")?.innerHTML || "",
-        lookBack: {
-          title: doc.querySelector("h2:nth-of-type(1)")?.innerHTML || "",
-          questions: Array.from(doc.querySelectorAll("ol:nth-of-type(1) li")).map(
-            (li) => li.innerHTML
-          ),
-        },
-        lookUp: {
-          title: doc.querySelector("h2:nth-of-type(2)")?.innerHTML || "",
-          questions: Array.from(doc.querySelectorAll("ol:nth-of-type(2) li")).map(
-            (li) => li.innerHTML
-          ),
-        },
-        lookForward: {
-          title: doc.querySelector("h2:nth-of-type(3)")?.innerHTML || "",
-          questions: Array.from(
-            doc.querySelectorAll("ol:nth-of-type(3) li")
-          ).map((li) => li.innerHTML),
-        },
-      };
-    },
+  methods: {
+    async loadContent() {
+    const languageStore = useLanguageStore();
+    const LanguageCodeHL = languageStore.getLanguageCodeHLSelected;
+
+    // Load common content
+    this.commonContent = await languageStore.loadCommonContent(LanguageCodeHL, 'dbs');
+
+    // Load study content
+    this.studyContent = await languageStore.loadStudyContent('dbs');
+  },
+
     saveToLocalStorage(position) {
       const lesson = this.languageStore.getBookLesson;
       const key = `dbs-${lesson}-${position}`;

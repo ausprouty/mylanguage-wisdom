@@ -32,7 +32,6 @@ export default {
   watch: {
     selectedLanguage: {
       handler() {
-        console.log (this.selectedLanguage + ' was selected');
         for( var i = 0; i < this.languageOptions.length; i++){
           if (this.languageOptions[i].value == this.selectedLanguage){
             this.languageCodeJF = this.languageOptions[i].languageCodeJF;
@@ -40,7 +39,6 @@ export default {
             break;
           }
         }
-        console.log ('Language Options says we now have languageCodeHL' + this.languageCodeHL);
         this.languageStore.updateLanguageSelected(this.languageCodeHL, this.languageCodeJF);
       },
       deep: true,

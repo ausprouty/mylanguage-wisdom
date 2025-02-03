@@ -1,15 +1,36 @@
+import { currentApi } from "boot/axios";
+
 // services/TranslationService.js
 export async function getCommonContent(language, study) {
-  // Check Vuex store (if needed) — skipped here since Vuex handles it
-  const localStoredContent = localStorage.getItem(`commonContent_${language}_${study}`);
-  if (localStoredContent) return JSON.parse(localStoredContent);
+  const cacheKey = `commonContent_${language}_${study}`;
 
-  // Fallback: API Call
-  const response = await fetch(`/api/translate/commonContent/${language}/${study}`);
-  const data = await response.json();
+  // Check local storage for cached content
+  const localStoredContent = localStorage.getItem(cacheKey);
+  if (localStoredContent) {
+    console.log('Using cached content from localStorage.');
+    return JSON.parse(localStoredContent);
+  }
 
-  // Cache this content locally for future use
-  localStorage.setItem(`commonContent_${language}_${study}`, JSON.stringify(data));
+  // Fallback: API call if content is not found locally
+  const url = `/api/translate/commonContent/${language}/${study}`;
+  console.log('Fetching content from API:', url);
 
-  return data;
+  try {
+    const response = await currentApi.get(url, { timeout: 10000 });
+
+    // Check if the response is already an object or needs parsing
+    const data = typeof response.data === 'string'
+      ? JSON.parse(response.data.data)
+      : response.data.data;
+
+    console.log('Fetched data:', data);
+
+    // Cache the content locally for future use
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+
+    return data;
+  } catch (error) {
+    console.error(`Error fetching common content: ${error}`);
+    throw error;  // Rethrow to allow the caller to handle the error
+  }
 }

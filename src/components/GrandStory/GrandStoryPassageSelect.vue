@@ -75,8 +75,6 @@ export default {
       this.$emit("showPassage", this.selectedValue.value);
     },
     updateSelectBar(key) {
-      console.log(this.supportedPassages);
-      console.log(key);
       if (typeof this.supportedPassages != undefined) {
         key = key - 1;
         if (key >= 0) {

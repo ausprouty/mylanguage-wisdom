@@ -12,7 +12,10 @@
         <GrandStorySegmentController @showTeaching="handleShowTeaching" />
       </div>
       <hr />
-      <GrandStoryStudy @showTeaching="handleShowTeaching" />
+      <GrandStoryStudy
+        :lessonLink="computedBookLesson"
+        :languageCode="computedLanguage"
+       />
     </div>
   </q-page>
 </template>
@@ -28,33 +31,21 @@ import GrandStoryStudy from "src/components/GrandStory/GrandStoryStudy.vue";
 
 export default {
   name: "GrandStory",
-  props: {
-    lessonLink: Number,
-    languageCode: String,
-  },
+
   components: {
     GrandStoryPassageSelect,
     GrandStorySegmentController,
     GrandStoryStudy,
   },
-  data() {
-    return {
-      text: "",
-      textBlocks: {
-        dbsBack: "",
-        dbsUp: "",
-        dbsForward: "",
-      },
-    };
-  },
+
 
   setup() {
     const languageStore = useLanguageStore();
     const route = useRoute();
-    if (route.params.lessonLink !== "") {
+    if (route.params.lessonLink) {
       languageStore.updateBookLesson(route.params.lessonLink);
     }
-    if (route.params.languageCode !== "") {
+    if (route.params.languageCode) {
       languageStore.updateLanguageSelected(route.params.languageCode);
     }
     return {
@@ -67,7 +58,7 @@ export default {
 
   computed: {
     computedLanguage() {
-      return this.languageStore.getLanguageSelected;
+      return this.languageStore.getLanguageCodeHLSelected;
     },
     computedBookLesson() {
       return this.languageStore.getBookLesson;
@@ -83,17 +74,11 @@ export default {
   },
   methods: {
     handleShowTeaching() {
-      console.log (legacyApi)
-      var lesson = this.languageStore.getBookLesson;
-      var language = this.languageStore.getLanguageCodeHLSelected;
-      var url = "api/dbs/view/" + lesson + "/" + language;
-      console.log(url);
-      legacyApi.get(url).then((response) => {
-        this.text = response.data;
-      });
+      console.log ('handle show teaching')
     },
+
     saveToLocalStorage(position) {
-      alert(position);
+      alert('save: ' + position);
       // Save to localStorage based on position (back, up, forward)
       const key = `dbs-${this.lesson}-${position}`;
       localStorage.setItem(
