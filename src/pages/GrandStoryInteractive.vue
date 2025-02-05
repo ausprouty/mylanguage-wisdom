@@ -61,7 +61,7 @@ export default {
       return this.languageStore.getLanguageCodeHLSelected;
     },
     computedBookLesson() {
-      return this.languageStore.getBookLesson;
+      return this.languageStore.getDbsLesson;
     },
   },
   watch: {

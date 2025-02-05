@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
-import { getCommonContent } from 'src/services/TranslationService';
+import { getCommonContent, getLessonContent } from 'src/services/TranslationService';
 
 export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
     commonContent: {}, // Will store content by language and study
+    lessonContent:{}, // Will store content by language, study and lesson
     lifeLesson:null,
     leadershipLesson: null,
-    grandStoryLesson: null,
+    dbsLesson: null,
     followingHimSegment: null,
     jVideoSegmentId: null,
     // you record the languageCodeHL here so you only get
@@ -82,7 +83,6 @@ export const useLanguageStore = defineStore("languageStore", {
           state.languageSelected = { languageCodeHL: 'eng00',"languageCodeJF":529 };
         }
       }
-
       // Ensure a valid return value
       const languageCodeHL = state.languageSelected?.languageCodeHL || 'eng00';
       console.log('getLanguageCodeHLSelected says ' + languageCodeHL);
@@ -139,6 +139,43 @@ export const useLanguageStore = defineStore("languageStore", {
       }
       this.commonContent[language][study] = content;
       return content;
+    },
+    async loadLessonContent(language, study, lesson) {
+      console.log ('I am in loadLessonContent')
+      console.log (language)
+      console.log (study)
+      console.log (lesson)
+      lesson = 1
+      // Initialize lessonContent[language] and lessonContent[language][study]
+      // if they don't exist
+      if (!this.lessonContent[language]) {
+        this.lessonContent[language] = {};
+      }
+      if (!this.lessonContent[language][study]) {
+        this.lessonContent[language][study] = {};
+      }
+      console.log ('I passed initalizing')
+      // Avoid re-fetching if the content is already loaded
+      if (this.lessonContent[language][study][lesson]) {
+        console.log('I am returning local storage');
+        return this.lessonContent[language][study][lesson];
+      }
+      console.log ('I want to getLessonContent')
+      // Fetch commonContent from service
+      try {
+        console.log('I will try to get Lesson content');
+        const content = await getLessonContent(language, study, lesson);
+        console.log('Here is the content');
+        console.log(content);  // Fixing the typo from `$content` to `content`
+
+        // Store it in the state
+        this.lessonContent[language][study][lesson] = content;
+        return content;
+      } catch (error) {
+        console.error('Failed to fetch lesson content:', error);
+        throw error;
+      }
+
     },
     updateDbsLesson(newValue) {
       if (newValue > 0 && newValue < 24){

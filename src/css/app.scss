@@ -7,15 +7,11 @@ body {
 }
 
 /* Bible Reference and Text */
-.biblereference,
-.bible_reference {
+
+.bible-reference {
   font-weight: bold;
   color: #d32f2f; /* Festive red */
   font-size: 1.2em;
-}
-
-.bible_text {
-  color: #ffcc00; /* Gold */
 }
 
 /* Select Elements */
@@ -133,10 +129,13 @@ p.copyright {
 /* Bible Container */
 .bible-container {
   display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 10px; /* Adds space between the blocks */
   padding: 10px;
   background-color: #f9e79f; /* Subtle gold background */
   border-radius: 5px;
 }
+
 div.dbs{
   background-color: #f9e79f;
 }
@@ -144,15 +143,12 @@ li.dbs{
   font-size:1rem;
 }
 
-div.bible_text{
+div.bible-text{
   color:#47135e;
-  font-weight:40;
+  font-weight:400;
   font-size: 1rem;
 }
-.bible-text {
-  flex: 1;
-  color:black;
-}
+
 
 .bible-text:first-child {
   margin-right: 20px;
@@ -208,5 +204,23 @@ td[clickable]:active::after {
   padding: 8px;
   font-size: 14px;
 }
+
+// readmore button
+.readmore-button {
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #e63946; /* Soft red */
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.readmore-button:hover {
+  background-color: #d62828;
+}
+
 
 

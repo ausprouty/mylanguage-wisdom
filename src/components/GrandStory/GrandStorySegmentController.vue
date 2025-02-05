@@ -38,18 +38,18 @@ export default {
   },
   computed: {
     currentSegment() {
-      return this.languageStore.getBookLesson;
+      return this.languageStore.getDbsLesson;
     },
   },
   methods: {
     showNextSegment() {
       this.nextSegment = Number(this.currentSegment) + 1;
-      this.languageStore.updateBookLesson(this.nextSegment);
+      this.languageStore.updateDbsLesson(this.nextSegment);
       this.$emit("showTeaching", this.nextSegment);
     },
     showPreviousSegment() {
       this.nextSegment = Number(this.currentSegment) - 1;
-      this.languageStore.updateBookLesson(this.nextSegment);
+      this.languageStore.updateDbsLesson(this.nextSegment);
       this.$emit("showTeaching", this.nextSegment);
     },
   },

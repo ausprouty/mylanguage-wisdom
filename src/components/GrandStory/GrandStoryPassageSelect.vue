@@ -7,7 +7,7 @@
       option-label="label"
       option-value="value"
       @update:model-value="updatePassage"
-      label="Passage from His Holy Book"
+      label="Wisdom Passage"
       class="select"
     />
   </div>
@@ -50,7 +50,7 @@ export default {
       return this.languageStore.getLanguageCodeHLSelected;
     },
     currentSegment() {
-      return this.languageStore.getBookLesson;
+      return this.languageStore.getDbsLesson;
     },
   },
   created() {
@@ -71,7 +71,7 @@ export default {
       });
     },
     updatePassage() {
-      this.languageStore.updateBookLesson(this.selectedValue.value);
+      this.languageStore.updateDbsLesson(this.selectedValue.value);
       this.$emit("showPassage", this.selectedValue.value);
     },
     updateSelectBar(key) {
