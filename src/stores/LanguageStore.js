@@ -141,11 +141,6 @@ export const useLanguageStore = defineStore("languageStore", {
       return content;
     },
     async loadLessonContent(language, study, lesson) {
-      console.log ('I am in loadLessonContent')
-      console.log (language)
-      console.log (study)
-      console.log (lesson)
-      lesson = 1
       // Initialize lessonContent[language] and lessonContent[language][study]
       // if they don't exist
       if (!this.lessonContent[language]) {
@@ -154,20 +149,13 @@ export const useLanguageStore = defineStore("languageStore", {
       if (!this.lessonContent[language][study]) {
         this.lessonContent[language][study] = {};
       }
-      console.log ('I passed initalizing')
       // Avoid re-fetching if the content is already loaded
       if (this.lessonContent[language][study][lesson]) {
-        console.log('I am returning local storage');
         return this.lessonContent[language][study][lesson];
       }
-      console.log ('I want to getLessonContent')
       // Fetch commonContent from service
       try {
-        console.log('I will try to get Lesson content');
         const content = await getLessonContent(language, study, lesson);
-        console.log('Here is the content');
-        console.log(content);  // Fixing the typo from `$content` to `content`
-
         // Store it in the state
         this.lessonContent[language][study][lesson] = content;
         return content;
@@ -175,7 +163,6 @@ export const useLanguageStore = defineStore("languageStore", {
         console.error('Failed to fetch lesson content:', error);
         throw error;
       }
-
     },
     updateDbsLesson(newValue) {
       if (newValue > 0 && newValue < 24){

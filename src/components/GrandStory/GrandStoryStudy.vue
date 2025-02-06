@@ -1,15 +1,15 @@
 <template>
-  <!-- Render Reactively Instead of Using v-html -->
   <div v-if="commonContent">
-    <h1 v-html="lessonContent.title" class="title dbs"></h1>
+    <h1 class="title dbs">{{ lessonContent?.title }}</h1>
 
-    <h2 v-html="commonContent.look_back.title" class="ltr dbs"></h2>
+    <h2 class="ltr dbs">{{ commonContent.look_back.title }}</h2>
     <ol class="ltr dbs">
       <li
         v-for="(item, index) in commonContent.look_back.question"
         :key="'back-' + index"
-        v-html="item"
-      ></li>
+      >
+        {{ item }}
+      </li>
     </ol>
     <textarea
       class="dbs-back notes"
@@ -18,14 +18,15 @@
       placeholder="Write your notes for Look Back here"
     ></textarea>
 
-    <h2 v-html="commonContent.look_up.title" class="ltr dbs"></h2>
+    <h2 class="ltr dbs">{{ commonContent.look_up.title }}</h2>
     <h3 class="dbs">{{ readInstruction }}</h3>
     <ol class="ltr dbs">
       <li
         v-for="(item, index) in commonContent.look_up.question"
         :key="'up-' + index"
-        v-html="item"
-      ></li>
+        >
+        {{ item }}
+      </li>
     </ol>
     <textarea
       class="dbs-up notes"
@@ -33,31 +34,33 @@
       @input="saveNoteToLocalStorage('up')"
       placeholder="Write your notes for Look Up here"
     ></textarea>
+
     <div class="bible-container">
       <div>
         <h3 class="dbs">{{ passageReference }}</h3>
       </div>
       <div
-        v-html="lessonContent.bibleBlock.passage.passageText"
+        v-html="lessonContent?.bibleBlock.passage.passageText"
         class="bible-text"
       ></div>
       <div>
         <a
-          :href="lessonContent.bibleBlock.passage.passageUrl"
+          :href="lessonContent?.bibleBlock.passage.passageUrl"
           class="readmore-button"
         >
-          {{ lessonContent.bibleBlock.translation.read_more }}
+          {{ lessonContent?.bibleBlock.translation.read_more }}
         </a>
       </div>
     </div>
 
-    <h2 v-html="commonContent.look_forward.title" class="ltr dbs"></h2>
+    <h2 class="ltr dbs">{{ commonContent.look_forward.title }}</h2>
     <ol class="ltr dbs">
       <li
         v-for="(item, index) in commonContent.look_forward.question"
         :key="'forward-' + index"
-        v-html="item"
-      ></li>
+        >
+        {{ item }}
+      </li>
     </ol>
     <textarea
       class="dbs-forward notes"
@@ -70,96 +73,113 @@
 
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
-import { ref, onMounted, watch } from 'vue';
-
-
+import { ref, onMounted, watch, computed } from "vue";
 
 export default {
   name: "GrandStoryStudy",
   props: {
     languageCodeHL: String,
-    study:String,
+    study: String,
     lesson: Number,
   },
-
-  data() {
-    return {
-      text: "",
-      readInstruction: null,
-      textBlocks: {
-        dbsBack: "",
-        dbsUp: "",
-        dbsForward: "",
-      },
-      passageReference: null,
-    };
-  },
-
   setup(props) {
+    console.log (props)
     const languageStore = useLanguageStore();
     const commonContent = ref(null);
     const lessonContent = ref(null);
-    const noteContent = ref(null);
+    const textBlocks = ref({
+      dbsBack: "",
+      dbsUp: "",
+      dbsForward: "",
+    });
+    const passageReference = ref("No reference found");
+    const readInstruction = ref(null);
 
     const loadCommonContent = async () => {
       commonContent.value = await languageStore.loadCommonContent(
-        props.languageCodeHL, props.study
+        props.languageCodeHL,
+        props.study
       );
     };
+
     const loadLessonContent = async () => {
       lessonContent.value = await languageStore.loadLessonContent(
-        props.languageCodeHL, props.study, props.lesson);
-      this.createTranslatedSentences();
-    };
-    const loadLessonNotes = () =>{
-      noteContent.value = languageStore.loadLessonNotes(
-      props.languageCodeHL, props.study, props.lesson);
+        props.languageCodeHL,
+        props.study,
+        props.lesson
+      );
+      createTranslatedSentences();
     };
 
-    // Load initial data when component mounts
+    const cleanReference = () => {
+      const reference = lessonContent.value.bibleBlock.passage.referenceLocalLanguage;
+      // Updated regex to capture cases like "Genesis 3" or "Genesis 3:1-5"
+      const bibleReferenceRegex = /[A-Za-z]+\s\d+(:\d+(-\d+)?)?/;
+      // Match the reference or fallback to the first non-blank section delimited by \n
+      passageReference.value = reference.match(bibleReferenceRegex)?.[0] ||
+          reference.split("\n").find(section => section.trim()) || "No reference found";
+    };
+
+    const createTranslatedSentences = () => {
+      cleanReference();
+      const readTemplate = lessonContent.value.bibleBlock.translation.read;
+      readInstruction.value = readTemplate.replace(
+        "{{XXX}}",
+        passageReference.value
+      );
+    };
+
+    const loadLessonNotes = () => {
+      const key = `${props.study}-${props.languageCodeHL}-${props.lesson}-notes`;
+      const storedNotes = localStorage.getItem(key);
+
+      if (storedNotes) {
+        const notes = JSON.parse(storedNotes);
+        textBlocks.value.dbsBack = notes.dbsBack || "";
+        textBlocks.value.dbsUp = notes.dbsUp || "";
+        textBlocks.value.dbsForward = notes.dbsForward || "";
+      } else {
+        // Clear textBlocks when no stored notes are found
+        textBlocks.value.dbsBack = "";
+        textBlocks.value.dbsUp = "";
+        textBlocks.value.dbsForward = "";
+      }
+    };
+
+    const saveNoteToLocalStorage = (position) => {
+      const key = `${props.study}-${props.languageCodeHL}-${props.lesson}-notes`;
+      const notes = {
+        dbsBack: textBlocks.value.dbsBack,
+        dbsUp: textBlocks.value.dbsUp,
+        dbsForward: textBlocks.value.dbsForward,
+      };
+      // Store the object as a JSON string in localStorage
+      localStorage.setItem(key, JSON.stringify(notes));
+    };
+
     onMounted(async () => {
       await loadCommonContent();
       await loadLessonContent();
-
       loadLessonNotes();
     });
 
-    // Watch for changes to props and reload data if necessary
-    watch(() => [props.languageCodeHL, props.study, props.lesson], async () => {
-      await loadCommonContent();
-      await loadLessonContent();
-      loadLessonNotes();
-    });
+    watch(
+      () => [props.languageCodeHL, props.study, props.lesson],
+      async () => {
+        await loadCommonContent();
+        await loadLessonContent();
+        loadLessonNotes();
+      }
+    );
 
-    return { commonContent, lessonContent, noteContent};
-  },
-
-  methods: {
-
-    createTranslatedSentences() {
-      this.cleanReference();
-      var readTemplate = this.lessonContent.bibleBlock.translation.read;
-      this.readInstruction =  readTemplate.replace("{{XXX}}", this.passageReference);
-    },
-    cleanReference() {
-      var reference =
-        this.lessonContent.bibleBlock.passage.referenceLocalLanguage;
-      // Regular expression to match a Bible reference pattern
-      let bibleReferenceRegex = /[A-Za-z]+\s\d+:\d+(?:-\d+)?/;
-      this.passageReference =
-        reference.match(bibleReferenceRegex)?.[0] || "No reference found";
-    },
-
-    saveNoteToLocalStorage(position) {
-
-      const key = `${props.languageCodeHL}-${props.study}-${props.lesson}-${position}`;
-      localStorage.setItem(
-        key,
-        this.textBlocks[
-          `dbs${position.charAt(0).toUpperCase() + position.slice(1)}`
-        ]
-      );
-    },
+    return {
+      commonContent,
+      lessonContent,
+      textBlocks,
+      passageReference,
+      readInstruction,
+      saveNoteToLocalStorage,
+    };
   },
 };
 </script>

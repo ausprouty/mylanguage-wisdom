@@ -2,7 +2,7 @@ import { currentApi } from "boot/axios";
 
 // services/TranslationService.js
 export async function getCommonContent(language, study) {
-  const cacheKey = `commonContent_${language}_${study}`;
+  const cacheKey = `${study}-${language}-commonContent`;
 
   // Check local storage for cached content
   const localStoredContent = localStorage.getItem(cacheKey);
@@ -38,8 +38,7 @@ export async function getCommonContent(language, study) {
 
 // services/TranslationService.js
 export async function getLessonContent(language, study, lesson) {
-  const cacheKey = `lessonContent_${language}_${study}_${lesson}`;
-
+  const cacheKey = `${study}-${language}-${lesson}-lessonContent`;
   // Check local storage for cached content
   const localStoredContent = localStorage.getItem(cacheKey);
   if (localStoredContent) {

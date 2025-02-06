@@ -14,7 +14,7 @@
       <hr />
       <GrandStoryStudy
         :languageCodeHL="computedLanguage"
-        :study="dbs"
+        :study="computedStudy"
         :lesson="computedBookLesson"
        />
     </div>
@@ -44,7 +44,7 @@ export default {
     const languageStore = useLanguageStore();
     const route = useRoute();
     if (route.params.lessonLink) {
-      languageStore.updateBookLesson(route.params.lessonLink);
+      languageStore.updateDbsLesson(route.params.lessonLink);
     }
     if (route.params.languageCode) {
       languageStore.updateLanguageSelected(route.params.languageCode);
@@ -53,9 +53,7 @@ export default {
       languageStore,
     };
   },
-  created() {
-    this.handleShowTeaching();
-  },
+
 
   computed: {
     computedLanguage() {
@@ -63,6 +61,9 @@ export default {
     },
     computedBookLesson() {
       return this.languageStore.getDbsLesson;
+    },
+    computedStudy() {
+      return 'dbs';
     },
   },
   watch: {
@@ -72,23 +73,18 @@ export default {
     computedBookLesson(newValue, oldValue) {
       this.handleShowTeaching();
     },
+    computedStudy(newValue, oldValue) {
+      this.handleShowTeaching();
+    },
   },
   methods: {
-    handleShowTeaching() {
-      console.log ('handle show teaching')
+    handleShowTeaching(nextSegment) {
+      if (typeof nextSegment !== 'undefined'){
+        this.languageStore.updateDbsLesson(nextSegment);
+      }
+
     },
 
-    saveToLocalStorage(position) {
-      alert('save: ' + position);
-      // Save to localStorage based on position (back, up, forward)
-      const key = `dbs-${this.lesson}-${position}`;
-      localStorage.setItem(
-        key,
-        this.textBlocks[
-          `dbs${position.charAt(0).toUpperCase() + position.slice(1)}`
-        ]
-      );
-    },
   },
 };
 </script>
