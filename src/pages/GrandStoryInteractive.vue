@@ -13,8 +13,9 @@
       </div>
       <hr />
       <GrandStoryStudy
-        :lessonLink="computedBookLesson"
-        :languageCode="computedLanguage"
+        :languageCodeHL="computedLanguage"
+        :study="dbs"
+        :lesson="computedBookLesson"
        />
     </div>
   </q-page>

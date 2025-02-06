@@ -51,8 +51,6 @@
       </div>
     </div>
 
-
-
     <h2 v-html="commonContent.look_forward.title" class="ltr dbs"></h2>
     <ol class="ltr dbs">
       <li
@@ -72,21 +70,21 @@
 
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
-import { useRoute } from "vue-router";
-import { legacyApi, currentApi } from "boot/axios";
+import { ref, onMounted, watch } from 'vue';
+
+
 
 export default {
   name: "GrandStoryStudy",
   props: {
-    lessonLink: Number,
-    languageCode: String,
+    languageCodeHL: String,
+    study:String,
+    lesson: Number,
   },
 
   data() {
     return {
       text: "",
-      commonContent: null, // Reactive object for parsed content
-      lessonContent: null,
       readInstruction: null,
       textBlocks: {
         dbsBack: "",
@@ -97,53 +95,47 @@ export default {
     };
   },
 
-  setup() {
-    // no access to this. variables
+  setup(props) {
     const languageStore = useLanguageStore();
-    const route = useRoute();
-    if (route.params.lessonLink) {
-      languageStore.updateDbsLesson(route.params.lessonLink);
-    }
-    if (route.params.languageCode) {
-      languageStore.updateLanguageSelected(route.params.languageCode);
-    }
-    return {
-      languageStore,
-    };
-  },
+    const commonContent = ref(null);
+    const lessonContent = ref(null);
+    const noteContent = ref(null);
 
-  async created() {
-    try {
-      await this.loadLessonContent();
-      await this.loadCommonContent();
+    const loadCommonContent = async () => {
+      commonContent.value = await languageStore.loadCommonContent(
+        props.languageCodeHL, props.study
+      );
+    };
+    const loadLessonContent = async () => {
+      lessonContent.value = await languageStore.loadLessonContent(
+        props.languageCodeHL, props.study, props.lesson);
       this.createTranslatedSentences();
-    } catch (error) {
-      console.error("Error in created hook:", error);
-      alert(`Error loading content: ${error.message}`);
-    }
+    };
+    const loadLessonNotes = () =>{
+      noteContent.value = languageStore.loadLessonNotes(
+      props.languageCodeHL, props.study, props.lesson);
+    };
+
+    // Load initial data when component mounts
+    onMounted(async () => {
+      await loadCommonContent();
+      await loadLessonContent();
+
+      loadLessonNotes();
+    });
+
+    // Watch for changes to props and reload data if necessary
+    watch(() => [props.languageCodeHL, props.study, props.lesson], async () => {
+      await loadCommonContent();
+      await loadLessonContent();
+      loadLessonNotes();
+    });
+
+    return { commonContent, lessonContent, noteContent};
   },
 
   methods: {
-    async loadCommonContent() {
-      const languageStore = useLanguageStore();
-      const LanguageCodeHL = languageStore.getLanguageCodeHLSelected;
-      const lesson = languageStore.getDbsLesson;
-      this.commonContent = await languageStore.loadCommonContent(
-        LanguageCodeHL,
-        "dbs"
-      );
-    },
-    async loadLessonContent() {
-      const languageStore = useLanguageStore();
-      const LanguageCodeHL = languageStore.getLanguageCodeHLSelected;
-      const lesson = languageStore.getDbsLesson;
-      this.lessonContent = await languageStore.loadLessonContent(
-        LanguageCodeHL,
-        "dbs",
-        lesson
-      );
-      console.log(this.lessonContent);
-    },
+
     createTranslatedSentences() {
       this.cleanReference();
       var readTemplate = this.lessonContent.bibleBlock.translation.read;
@@ -157,9 +149,10 @@ export default {
       this.passageReference =
         reference.match(bibleReferenceRegex)?.[0] || "No reference found";
     },
+
     saveNoteToLocalStorage(position) {
-      const lesson = this.languageStore.getDbsLesson;
-      const key = `dbs-${lesson}-${position}`;
+
+      const key = `${props.languageCodeHL}-${props.study}-${props.lesson}-${position}`;
       localStorage.setItem(
         key,
         this.textBlocks[
