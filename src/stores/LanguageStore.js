@@ -5,11 +5,19 @@ export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
     commonContent: {}, // Will store content by language and study
     lessonContent:{}, // Will store content by language, study and lesson
-    lifeLesson:null,
-    leadershipLesson: null,
-    dbsLesson: null,
-    followingHimSegment: null,
-    jVideoSegmentId: null,
+    lessonNumber: {
+      dbs:null,
+      lead:null,
+      life:null,
+      jfilm:null,
+    },
+    maxLessonNumber:{
+      dbs:23,
+      lead:25,
+      life:23,
+      jfilm:61,
+    },
+
     // you record the languageCodeHL here so you only get
     // new titles for the Jesus video when
     // languageSelected.languageCodeHL changes
@@ -27,25 +35,41 @@ export const useLanguageStore = defineStore("languageStore", {
     previousPage: '/index'
   }),
   getters: {
-    getDbsLesson: (state) => {
-      if (state.dbsLesson == null || typeof state.dbsLesson == 'undefined'){
-        state.dbsLesson = localStorage.getItem("dbsLesson", 1)
-      }
-      return parseInt(state.dbsLesson,10)
-    },
+
     getFollowingHimSegment: (state) => {
       if (state.followingHimSegment  == null || typeof state.followingHimSegment == 'undefined'){
         state.followingHimSegment = localStorage.getItem("followingHimSegment", '1-0-0')
       }
       return state.followingHimSegment
     },
-    getLifeLesson: (state) => {
-      if (state.lifeLesson == null || typeof state.lifeLesson == 'undefined'){
-        state.lifeLesson = localStorage.getItem("lifeLesson", 1)
+    getLessonNumber: (state) => (study) => {
+      if (!state.lessonNumber.hasOwnProperty(study)) {
+        console.warn(`Invalid study: ${study}`);
+        return null;
       }
-      return state.lifeLesson
-    },
+      if (state.lessonNumber[study] !== null) {
+        return parseInt(state.lessonNumber[study], 10);
+      }
+      const savedLesson = localStorage.getItem(`${study}Lesson`);
+      if (savedLesson !== null) {
+        state.lessonNumber[study] = parseInt(savedLesson, 10);
+        return state.lessonNumber[study];
+      }
 
+      return 1; // Default value
+    },
+    getMaxLesson: (state) => (study) => {
+      if (!state.maxLessonNumber.hasOwnProperty(study)) {
+        console.warn(`Invalid study: ${study}`);
+        return null;
+      }
+      return state.maxLessonNumber[study];
+    },
+    isAtMaxLesson: (state) => (study) => {
+      const currentLesson = parseInt(state.lessonNumber[study] || 0, 10);
+      const maxLesson = state.maxLessonNumber[study] || 0;
+      return currentLesson >= maxLesson;
+    },
     getJVideoSegmentId: (state) => {
       if (state.jVideoSegmentId  == null || typeof state.jVideoSegmentId == 'undefined'){
         console.log ('getting jvideoSegmentId from local storage')
@@ -88,7 +112,6 @@ export const useLanguageStore = defineStore("languageStore", {
       console.log('getLanguageCodeHLSelected says ' + languageCodeHL);
       return languageCodeHL;
     },
-
     getLanguageCodeJFSelected: (state) => {
       if (state.languageSelected == null){
         var local = localStorage.getItem("languageSelected", '{"languageSelected":{"languageCodeHL":"eng00","languageCodeJF":529}}');
@@ -96,7 +119,6 @@ export const useLanguageStore = defineStore("languageStore", {
       }
       return state.languageSelected.languageCodeJF
     },
-
     getLanguageSelected: (state) => {
       if (state.languageSelected == null){
         var local = localStorage.getItem("languageSelected", '{"languageSelected":{"languageCodeHL":"eng00","languageCodeJF":529,  "value": 3}}');
@@ -110,13 +132,6 @@ export const useLanguageStore = defineStore("languageStore", {
           state.languageSelected = JSON.parse(local)
       }
       return state.languageSelected.value
-    },
-
-    getLeadershipLesson: (state) => {
-      if (state.leadershipLesson  == null || typeof state.leadershipLesson  == 'undefined'){
-        state.leadershipLesson = localStorage.getItem("leadershipLesson", 1)
-      }
-      return state.leadershipLesson
     },
 
     getPreviousPage: (state) => {
@@ -164,23 +179,13 @@ export const useLanguageStore = defineStore("languageStore", {
         throw error;
       }
     },
-    updateDbsLesson(newValue) {
-      if (newValue > 0 && newValue < 24){
-        localStorage.setItem('dbsLesson', newValue);
-        this.dbsLesson = newValue;
+    setLessonNumber(study, lesson) {
+      if (this.lessonNumber.hasOwnProperty(study)) {
+        this.lessonNumber[study] = lesson;
+        localStorage.setItem(`${study}Lesson`, lesson);
+      } else {
+        console.warn(`Attempted to set lesson for an invalid study: ${study}`);
       }
-
-    },
-    updateFollowingHimSegment(newValue) {
-      localStorage.setItem('followingHimSegment', newValue);
-      this.followingHimSegment = newValue;
-    },
-    updateLifeLesson(newValue) {
-      if (newValue > 0 &&  newValue < 24){
-        localStorage.setItem('lifeLesson', newValue);
-        this.lifeLesson = newValue;
-      }
-
     },
     updateJVideoSegmentId(newValue) {
       if (newValue != null){
@@ -216,15 +221,8 @@ export const useLanguageStore = defineStore("languageStore", {
       this.languageSelected.languageCodeJF = languageCodeJF;
       localStorage.setItem('languageSelected', JSON.stringify(this.languageSelected));
     },
-    updateLeadershipLesson(newValue) {
-      if (newValue > 0 && newValue < 24){
-        localStorage.setItem('leadershipLesson', newValue);
-        this.leadershipLesson = newValue;
-      }
-    },
     updatePreviousPage(newValue) {
       localStorage.set("previousPage", newValue);
-
     },
   }
 });

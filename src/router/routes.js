@@ -10,24 +10,15 @@ const routes = [
         component: () => import("pages/IndexPage.vue"),
       },
       {
-        name: "SourceOfWisdom",
-        path: "/source/:lessonLink?/:languageCode?",
-        component: () => import("src/pages/SourceOfWisdom.vue"),
+        name: "JesusVideoMaster",
+        path: "/video/:lesson?/:languageCodeHL?",
+        component: () => import("src/pages/JesusVideoMaster.vue"),
       },
+
       {
-        name: "HisWisdom",
-        path: "/wisdom/:lessonLink?/:languageCode?",
-        component: () => import("src/pages/HisWisdom.vue"),
-      },
-      {
-        name: "GrandStory",
-        path: "/storyOld/:lessonLink?/:languageCode?",
-        component: () => import("src/pages/GrandStory.vue"),
-      },
-      {
-        name: "GrandStoryInteractive",
-        path: "/story/:lessonLink?/:languageCode?",
-        component: () => import("src/pages/GrandStoryInteractive.vue"),
+        name: "SeriesMaster",
+        path: "/wisdom/:series/:study?/:lesson?/:languageCodeHL?",
+        component: () => import("src/pages/SeriesMaster.vue"),
       },
 
       {

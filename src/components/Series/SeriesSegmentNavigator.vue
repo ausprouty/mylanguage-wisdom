@@ -22,7 +22,10 @@
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
-  name: "GrandStorySegmentController",
+  name: "SeriesSegmentNavigator",
+  props: {
+    study: String,
+  },
   data() {
     return {
       minSegment: 1,

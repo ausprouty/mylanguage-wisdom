@@ -3,11 +3,11 @@
     <q-select
       filled
       v-model="selectedValue"
-      :options="lessons"
+      :options="supportedPassages"
       option-label="label"
       option-value="value"
-      @update:model-value="updateLesson"
-      label="Teachings"
+      @update:model-value="updatePassage"
+      label="Wisdom Passage"
       class="select"
     />
   </div>
@@ -17,8 +17,10 @@
 import { legacyApi, currentApi } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
-  name: "HisTeachingsPassageSelect",
-
+  name: "SeriesPassageSelect",
+  props: {
+    study: String,
+  },
   setup() {
     const languageStore = useLanguageStore();
     return {
@@ -28,10 +30,10 @@ export default {
   data() {
     return {
       selectedValue: {
-        value: 1,
         label: "SELECT",
+        value: 1,
       },
-      lessons: [],
+      supportedPassages: [],
     };
   },
   watch: {
@@ -51,7 +53,7 @@ export default {
       return this.languageStore.getLanguageCodeHLSelected;
     },
     currentSegment() {
-      return this.languageStore.getHisTeachingLesson;
+      return this.languageStore.getDbsLesson;
     },
   },
   created() {
@@ -59,37 +61,34 @@ export default {
   },
   methods: {
     getLessonList(languageCodeHL) {
-      var url = "api/life_principles/studies/" + languageCodeHL;
+      var url = "api/dbs/studies/" + languageCodeHL;
       console.log(url);
       legacyApi.get(url).then((response) => {
         var data = response.data;
-        this.lessons = data.map((item) => ({
+        this.supportedPassages = data.map((item) => ({
           label: item.title,
           value: item.lesson,
         }));
         this.updateSelectBar(this.currentSegment);
-        this.updateLesson();
+        this.updatePassage();
       });
     },
-    updateLesson() {
-      this.languageStore.updateHisTeachingLesson(this.selectedValue.value);
-      this.$emit("showTeaching", this.selectedValue.value);
+    updatePassage() {
+      this.languageStore.updateDbsLesson(this.selectedValue.value);
+      this.$emit("showPassage", this.selectedValue.value);
     },
     updateSelectBar(key) {
-      key = key - 1;
-      if (key >= 0) {
-        this.selectedValue.label = this.lessons[key].label;
-        this.selectedValue.value = this.lessons[key].value;
-      } else {
-        this.selectedValue.label = "SELECT";
-        this.selectedValue.value = 1;
+      if (typeof this.supportedPassages != undefined) {
+        key = key - 1;
+        if (key >= 0) {
+          this.selectedValue.label = this.supportedPassages[key].label;
+          this.selectedValue.value = this.supportedPassages[key].value;
+        } else {
+          this.selectedValue.label = "SELECT";
+          this.selectedValue.value = 1;
+        }
       }
     },
   },
 };
 </script>
-<style scoped>
-.q-item__label {
-  color: black;
-}
-</style>

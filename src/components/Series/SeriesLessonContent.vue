@@ -76,7 +76,7 @@ import { useLanguageStore } from "stores/LanguageStore";
 import { ref, onMounted, watch, computed } from "vue";
 
 export default {
-  name: "GrandStoryStudy",
+  name: "SeriesLessonContent",
   props: {
     languageCodeHL: String,
     study: String,
