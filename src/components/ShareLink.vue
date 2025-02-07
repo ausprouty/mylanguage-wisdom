@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     shareUrl() {
-      var subject = "Finding a Guru worth Following";
+      var subject = "Finding Wisdom";
       var message = "Here is the link";
       let url = window.location.href;
       var page = this.getLastSegment(url);

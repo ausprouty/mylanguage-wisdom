@@ -3,6 +3,8 @@ import { getCommonContent, getLessonContent } from 'src/services/TranslationServ
 
 export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
+    currentStudy:null,
+    currentUrl:null,
     commonContent: {}, // Will store content by language and study
     lessonContent:{}, // Will store content by language, study and lesson
     lessonNumber: {
@@ -178,6 +180,14 @@ export const useLanguageStore = defineStore("languageStore", {
         console.error('Failed to fetch lesson content:', error);
         throw error;
       }
+    },
+    setCurrentStudy(study) {
+        this.currentStudy = study;
+        localStorage.setItem(`currentStudy`, study);
+    },
+    setCurrentUrl(url) {
+      this.currentUrl = url;
+      localStorage.setItem(`currentUrl`, url);
     },
     setLessonNumber(study, lesson) {
       if (this.lessonNumber.hasOwnProperty(study)) {

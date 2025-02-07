@@ -7,7 +7,7 @@
       option-label="label"
       option-value="value"
       @update:model-value="updatePassage"
-      label="Wisdom Passage"
+      label="Passage"
       class="select"
     />
   </div>
@@ -19,9 +19,11 @@ import { useLanguageStore } from "stores/LanguageStore";
 export default {
   name: "SeriesPassageSelect",
   props: {
+    languageCodeHL: String,
     study: String,
+    lesson: Number,
   },
-  setup() {
+  setup(props) {
     const languageStore = useLanguageStore();
     return {
       languageStore,
@@ -37,23 +39,20 @@ export default {
     };
   },
   watch: {
-    languageCodeHL: function (newLanguage, oldLanguage) {
+    languageCodeHL(newLanguage, oldLanguage) {
       if (newLanguage !== oldLanguage) {
         this.getLessonList(newLanguage);
       }
     },
-    currentSegment: function (newLesson, oldLesson) {
+    currentLesson(newLesson, oldLesson) {
       if (newLesson !== oldLesson) {
         this.updateSelectBar(newLesson);
       }
     },
   },
   computed: {
-    languageCodeHL() {
-      return this.languageStore.getLanguageCodeHLSelected;
-    },
-    currentSegment() {
-      return this.languageStore.getDbsLesson;
+    currentLesson() {
+      return this.languageStore.lessonNumber[this.study] || 1;
     },
   },
   created() {
@@ -61,33 +60,35 @@ export default {
   },
   methods: {
     getLessonList(languageCodeHL) {
-      var url = "api/dbs/studies/" + languageCodeHL;
+      const url = `api/lessons/${this.study}/${languageCodeHL}`;
       console.log(url);
-      legacyApi.get(url).then((response) => {
-        var data = response.data;
+      currentApi.get(url).then((response) => {
+        const data = response.data;
         this.supportedPassages = data.map((item) => ({
           label: item.title,
           value: item.lesson,
         }));
-        this.updateSelectBar(this.currentSegment);
-        this.updatePassage();
+        this.updateSelectBar(this.currentLesson);
       });
     },
     updatePassage() {
-      this.languageStore.updateDbsLesson(this.selectedValue.value);
+      this.languageStore.setLessonNumber(this.study, this.selectedValue.value);
       this.$emit("showPassage", this.selectedValue.value);
     },
-    updateSelectBar(key) {
-      if (typeof this.supportedPassages != undefined) {
-        key = key - 1;
-        if (key >= 0) {
-          this.selectedValue.label = this.supportedPassages[key].label;
-          this.selectedValue.value = this.supportedPassages[key].value;
+    updateSelectBar(lesson) {
+      if (Array.isArray(this.supportedPassages) && lesson > 0) {
+        const passage = this.supportedPassages.find(p => p.value === lesson);
+        if (passage) {
+          this.selectedValue = { label: passage.label, value: passage.value };
         } else {
-          this.selectedValue.label = "SELECT";
-          this.selectedValue.value = 1;
+          this.resetSelectBar();
         }
+      } else {
+        this.resetSelectBar();
       }
+    },
+    resetSelectBar() {
+      this.selectedValue = { label: "SELECT", value: 1 };
     },
   },
 };

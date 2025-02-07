@@ -72,14 +72,20 @@ export default {
       console.log(url);
       legacyApi.get(url).then((response) => {
         var externalURL = "https://www.everyperson.com/contact.php";
-        if (typeof response.data.contactPage != "undefined") {
+        if (typeof response.data.contactPage !== "undefined") {
           externalURL = response.data.contactPage;
         }
-        window.open(externalURL, "_blank");
+        // Try to open the URL in a new tab or window
+        var newWindow = window.open(externalURL, "_blank");
+        // Check if the popup was blocked
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === "undefined") {
+          console.warn("Popup was blocked, falling back to same window navigation.");
+          window.location.href = externalURL;  // Fallback to same window navigation
+        }
       });
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style scoped>
 .menu_item {

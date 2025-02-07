@@ -6,10 +6,20 @@
     <p>{{ $t(`${computedStudy}.book.para3`) }}</p>
     <div>
       <div>
-        <SeriesPassageSelect @showPassage="handleShowTeaching" />
+        <SeriesPassageSelect
+          :languageCodeHL="computedLanguage"
+          :study="computedStudy"
+          :lesson="computedBookLesson"
+          @showPassage="handleShowTeaching"
+         />
       </div>
       <div>
-        <SeriesSegmentNavigator @showTeaching="handleShowTeaching" />
+        <SeriesSegmentNavigator
+          :languageCodeHL="computedLanguage"
+          :study="computedStudy"
+          :lesson="computedBookLesson"
+          @showTeaching="handleShowTeaching"
+        />
       </div>
       <hr />
       <SeriesLessonContent
@@ -54,7 +64,7 @@ export default {
     const currentLanguageCodeHL = route.params.languageCodeHL || DEFAULTS.languageCodeHL;
 
     // Update store on initial load
-    languageStore.updateStudy(currentStudy);
+    languageStore.setCurrentStudy(currentStudy);
     languageStore.setLessonNumber(currentStudy, currentLesson);
     languageStore.updateLanguageSelected(currentLanguageCodeHL);
 

@@ -28,18 +28,18 @@
 </template>
 
 <script>
-import JVideoPlayer from "src/components/SourceOfWisdom/JVideoPlayer.vue";
-import JVideoSegmentSelect from "src/components/SourceOfWisdom/JVideoSegmentSelect.vue";
-import JVideoSegmentController from "src/components/SourceOfWisdom/JVideoSegmentController.vue";
-import JVideoQuestions from "src/components/SourceOfWisdom/JVideoQuestions.vue";
+import JVideoPlayer from "src/components/JVideo/JVideoPlayer.vue";
+import JVideoSegmentSelect from "src/components/JVideo/JVideoSegmentSelect.vue";
+import JVideoSegmentController from "src/components/JVideo/JVideoSegmentController.vue";
+import JVideoQuestions from "src/components/JVideo/JVideoQuestions.vue";
 import { useLanguageStore } from "stores/LanguageStore";
 import { computed } from "vue";
 
 export default {
-  name: "SourceOfWisdom",
+  name: "JesusVideoMaster",
   props: {
-    lessonLink: Number,
-    languageCode: String,
+    lesson: Number,
+    languageCodeHL: String,
   },
   components: {
     JVideoPlayer,

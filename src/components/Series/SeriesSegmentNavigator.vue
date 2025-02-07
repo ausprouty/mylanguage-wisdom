@@ -1,63 +1,67 @@
 <template>
   <div class="q-pa-md q-gutter-md q-flex">
     <div
-      v-if="this.currentSegment > this.minSegment"
+      v-if="currentLesson > minLesson"
       class="q-gutter-md q-flex items-center inline"
-      @click="showPreviousSegment"
+      @click="showPreviousLesson"
     >
       <q-btn flat dense round icon="arrow_back" aria-label="Previous" />
       <span class="q-ml-md">Previous</span>
     </div>
 
     <div
-      v-if="this.currentSegment < this.maxSegment"
+      v-if="currentLesson < maxLesson"
       class="q-gutter-md q-flex items-center inline align-right"
-      @click="showNextSegment"
+      @click="showNextLesson"
     >
       <span class="q-mr-md">Next</span>
       <q-btn flat dense round icon="arrow_forward" aria-label="Next" />
     </div>
   </div>
 </template>
+
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
-  name: "SeriesSegmentNavigator",
+  name: "SeriesLessonNavigator",
   props: {
+    languageCodeHL: String,
     study: String,
+    lesson: Number,
   },
   data() {
     return {
-      minSegment: 1,
-      maxSegment: 23,
-      nextSegment: 0,
+      minLesson: 1,
+      nextLesson: 0,
     };
   },
-  setup() {
+  setup(props) {
     const languageStore = useLanguageStore();
     return {
       languageStore,
+      maxLesson: languageStore.getMaxLesson(props.study),
     };
   },
   computed: {
-    currentSegment() {
-      return this.languageStore.getDbsLesson;
+    currentLesson() {
+      return this.languageStore.lessonNumber[this.study] || 1;
     },
   },
   methods: {
-    showNextSegment() {
-      this.nextSegment = Number(this.currentSegment) + 1;
-      this.languageStore.updateDbsLesson(this.nextSegment);
-      this.$emit("showTeaching", this.nextSegment);
+    showNextLesson() {
+      this.nextLesson = Number(this.currentLesson) + 1;
+      this.languageStore.setLessonNumber(this.study, this.nextLesson);
+      this.$emit("showTeaching", this.nextLesson);
     },
-    showPreviousSegment() {
-      this.nextSegment = Number(this.currentSegment) - 1;
-      this.languageStore.updateDbsLesson(this.nextSegment);
-      this.$emit("showTeaching", this.nextSegment);
+    showPreviousLesson() {
+      this.nextLesson = Number(this.currentLesson) - 1;
+      this.languageStore.setLessonNumber(this.study, this.nextLesson);
+      this.$emit("showTeaching", this.nextLesson);
     },
   },
 };
 </script>
+
 <style scoped>
 .align-right {
   text-align: right;
@@ -66,18 +70,22 @@ export default {
 .inline {
   display: inline-block;
 }
+
 div.inline {
   width: 50%;
 }
+
 .q-gutter-md,
 .q-mr-md,
 .q-ml-md {
   margin-top: 0px;
 }
+
 .q-gutter-y-md,
 .q-gutter-md {
   margin-top: 0px;
 }
+
 .q-gutter-y-md > *,
 .q-gutter-md > * {
   margin-top: 0px;
