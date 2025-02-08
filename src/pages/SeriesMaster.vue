@@ -33,7 +33,6 @@
 
 <script>
 import { useLanguageStore } from "stores/LanguageStore";
-import { legacyApi, currentApi } from "boot/axios";
 import { useRoute } from "vue-router";
 
 import SeriesPassageSelect from "src/components/Series/SeriesPassageSelect.vue";
@@ -107,3 +106,4 @@ export default {
     },
   },
 };
+</script>

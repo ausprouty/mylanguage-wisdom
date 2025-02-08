@@ -41,7 +41,12 @@ export default {
   watch: {
     languageCodeHL(newLanguage, oldLanguage) {
       if (newLanguage !== oldLanguage) {
-        this.getLessonList(newLanguage);
+        this.getLessonList();
+      }
+    },
+    study(newStudy, oldStudy) {
+      if (newStudy !== oldStudy) {
+        this.getLessonList();
       }
     },
     currentLesson(newLesson, oldLesson) {
@@ -56,20 +61,11 @@ export default {
     },
   },
   created() {
-    this.getLessonList(this.languageCodeHL);
+    this.getLessonList();
   },
   methods: {
-    getLessonList(languageCodeHL) {
-      const url = `api/lessons/${this.study}/${languageCodeHL}`;
-      console.log(url);
-      currentApi.get(url).then((response) => {
-        const data = response.data;
-        this.supportedPassages = data.map((item) => ({
-          label: item.title,
-          value: item.lesson,
-        }));
-        this.updateSelectBar(this.currentLesson);
-      });
+    getLessonList() {
+      return this.languageStore.loadLessonList(this.study, this.languageCodeHL);
     },
     updatePassage() {
       this.languageStore.setLessonNumber(this.study, this.selectedValue.value);
