@@ -3,23 +3,29 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, nextTick } from 'vue';
 
 export default defineComponent({
   name: 'App',
   created() {
-    // Retrieve the stored path from local storage
     const storedPath = localStorage.getItem('currentPath');
-
     if (storedPath) {
-      // Navigate to the stored path
-      this.$router.push(storedPath);
-    }
-    else{
+      console.log(storedPath); // Confirm valid path retrieved
+      nextTick(() => {
+        const resolvedRoute = this.$router.resolve(storedPath);
+        console.log(resolvedRoute); // Log to check if matched is correct
+        if (resolvedRoute.route && resolvedRoute.route.matched.length > 0) {
+          this.$router.push(storedPath);
+        } else {
+          this.$router.push('index');
+        }
+      });
+    } else {
       this.$router.push('index');
     }
-  },
-})
+  }
+});
+
 </script>
 <style>
 .q-header{

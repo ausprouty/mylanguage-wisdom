@@ -3,7 +3,7 @@ import { getCommonContent, getLessonContent } from 'src/services/TranslationServ
 
 export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
-    currentStudy:null,
+    currentStudy:'dbs',
     currentUrl:null,
     commonContent: {}, // Will store content by language and study
     lessonContent:{}, // Will store content by language, study and lesson
@@ -26,6 +26,7 @@ export const useLanguageStore = defineStore("languageStore", {
     jVideoSegments:{
       languageCodeHL: 'eng00',
       languageCodeJF: '529',
+      currentId: null,
       segments:[]
     },
     languages: [],
@@ -37,7 +38,17 @@ export const useLanguageStore = defineStore("languageStore", {
     previousPage: '/index'
   }),
   getters: {
+    getCurrentStudy() {
+      return 'dbs';
+      let study = this.currentStudy || localStorage.getItem('currentStudy') || 'dbs';
 
+      // If currentStudy exists, update localStorage
+      if (this.currentStudy) {
+        localStorage.setItem('currentStudy', this.currentStudy);
+      }
+      alert ('getCurrentStudy says' + study)
+      return study;
+    },
     getFollowingHimSegment: (state) => {
       if (state.followingHimSegment  == null || typeof state.followingHimSegment == 'undefined'){
         state.followingHimSegment = localStorage.getItem("followingHimSegment", '1-0-0')
@@ -73,11 +84,11 @@ export const useLanguageStore = defineStore("languageStore", {
       return currentLesson >= maxLesson;
     },
     getJVideoSegmentId: (state) => {
-      if (state.jVideoSegmentId  == null || typeof state.jVideoSegmentId == 'undefined'){
+      if (state.jVideoSegments.currentId  == null || typeof state.jVideoSegments.currentId == 'undefined'){
         console.log ('getting jvideoSegmentId from local storage')
-        state.jVideoSegmentId = localStorage.getItem("jVideoSegmentId", 1)
+        state.jVideoSegments.currentId = localStorage.getItem("jVideoSegments.currentId", 1)
       }
-      return state.jVideoSegmentId
+      return state.jVideoSegments.currentId
     },
     getJVideoSegments: (state) => {
       if (state.jVideoSegments == null || typeof state.jVideoSegments == 'undefined'){
@@ -89,7 +100,7 @@ export const useLanguageStore = defineStore("languageStore", {
           state.jVideoSegments = null;
         }
       }
-      return state.jVideoSegments
+      return state.jVideoSegments.segments
     },
     getLanguageCodeHLSelected: (state) => {
       if (!state.languageSelected) {

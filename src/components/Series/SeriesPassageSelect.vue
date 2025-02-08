@@ -3,27 +3,25 @@
     <q-select
       filled
       v-model="selectedValue"
-      :options="supportedPassages"
+      :options="topics"
       option-label="label"
       option-value="value"
       @update:model-value="updatePassage"
-      label="Passage"
+      label="Topic"
       class="select"
     />
   </div>
 </template>
 
 <script>
-import { legacyApi, currentApi } from "boot/axios";
 import { useLanguageStore } from "stores/LanguageStore";
 export default {
   name: "SeriesPassageSelect",
   props: {
-    languageCodeHL: String,
-    study: String,
+    topics: Array,
     lesson: Number,
   },
-  setup(props) {
+  setup() {
     const languageStore = useLanguageStore();
     return {
       languageStore,
@@ -39,16 +37,6 @@ export default {
     };
   },
   watch: {
-    languageCodeHL(newLanguage, oldLanguage) {
-      if (newLanguage !== oldLanguage) {
-        this.getLessonList();
-      }
-    },
-    study(newStudy, oldStudy) {
-      if (newStudy !== oldStudy) {
-        this.getLessonList();
-      }
-    },
     currentLesson(newLesson, oldLesson) {
       if (newLesson !== oldLesson) {
         this.updateSelectBar(newLesson);
@@ -60,13 +48,9 @@ export default {
       return this.languageStore.lessonNumber[this.study] || 1;
     },
   },
-  created() {
-    this.getLessonList();
-  },
+
   methods: {
-    getLessonList() {
-      return this.languageStore.loadLessonList(this.study, this.languageCodeHL);
-    },
+
     updatePassage() {
       this.languageStore.setLessonNumber(this.study, this.selectedValue.value);
       this.$emit("showPassage", this.selectedValue.value);

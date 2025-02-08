@@ -81,6 +81,7 @@ export default {
     languageCodeHL: String,
     study: String,
     lesson: Number,
+    commonContent:Object,
   },
   setup(props) {
     console.log (props)
@@ -94,13 +95,6 @@ export default {
     });
     const passageReference = ref("No reference found");
     const readInstruction = ref(null);
-
-    const loadCommonContent = async () => {
-      commonContent.value = await languageStore.loadCommonContent(
-        props.languageCodeHL,
-        props.study
-      );
-    };
 
     const loadLessonContent = async () => {
       lessonContent.value = await languageStore.loadLessonContent(
@@ -158,7 +152,6 @@ export default {
     };
 
     onMounted(async () => {
-      await loadCommonContent();
       await loadLessonContent();
       loadLessonNotes();
     });
@@ -166,14 +159,12 @@ export default {
     watch(
       () => [props.languageCodeHL, props.study, props.lesson],
       async () => {
-        await loadCommonContent();
         await loadLessonContent();
         loadLessonNotes();
       }
     );
 
     return {
-      commonContent,
       lessonContent,
       textBlocks,
       passageReference,

@@ -17,7 +17,7 @@ const routes = [
 
       {
         name: "SeriesMaster",
-        path: "/wisdom/:series/:study?/:lesson?/:languageCodeHL?",
+        path: "/series/:study?/:lesson?/:languageCodeHL?",
         component: () => import("src/pages/SeriesMaster.vue"),
       },
 

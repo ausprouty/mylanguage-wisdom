@@ -25,7 +25,6 @@ import { useLanguageStore } from "stores/LanguageStore";
 export default {
   name: "SeriesLessonNavigator",
   props: {
-    languageCodeHL: String,
     study: String,
     lesson: Number,
   },

@@ -9,14 +9,14 @@
       <div>
         <SeriesPassageSelect
           :topics="commonContent.topics"
-          :lesson="computedLessonNumber"
+          :lesson="computedBookLesson"
           @showPassage="handleShowTeaching"
         />
       </div>
       <div>
         <SeriesSegmentNavigator
           :study="study"
-          :lesson="computedLessonNumber"
+          :lesson="computedBookLesson"
           @showTeaching="handleShowTeaching"
         />
       </div>
@@ -31,8 +31,7 @@
       <SeriesLessonContent
         :languageCodeHL="computedLanguage"
         :study="computedStudy"
-        :lesson="computedLessonNumber"
-        :commonContent = "commonContent"
+        :lesson="computedBookLesson"
       />
     </div>
     <div v-else>
@@ -41,7 +40,10 @@
   </q-page>
 </template>
 
+---
+
 <script>
+
 import { ref, computed, onMounted } from 'vue';
 import { useLanguageStore } from 'stores/LanguageStore';
 import { useRoute } from 'vue-router';
@@ -68,7 +70,7 @@ export default {
     const DEFAULTS = {
       study: 'dbs',
       lesson: '1',
-      languageCodeHL: 'eng00',
+      languageCodeHL: 'en',
     };
 
     // Set defaults if parameters are not provided
@@ -94,22 +96,15 @@ export default {
     // Load common content when the component mounts
     onMounted(loadCommonContent);
 
-    // Correctly use getters as computed properties
-    const computedLanguage = computed(() =>
-      languageStore.getters['getLanguageCodeHLSelected']);
-    
-    const computedStudy = computed(() =>
-      languageStore.getters['getCurrentStudy']);
-
-    const computedLessonNumber = computed(() =>
-      languageStore.getters['getLessonNumber'](computedStudy));
-
-
+    // Computed properties
+    const computedLanguage = computed(() => languageStore.getLanguageCodeHLSelected);
+    const computedBookLesson = computed(() => languageStore.getLessonNumber(languageStore.getStudy()));
+    const computedStudy = computed(() => languageStore.getStudy());
 
     return {
       commonContent,
       computedLanguage,
-      computedLessonNumber,
+      computedBookLesson,
       computedStudy,
       lessonContentRetrieved,
     };
@@ -118,7 +113,8 @@ export default {
   methods: {
     handleShowTeaching(nextSegment) {
       const currentStudy = this.computedStudy;
-      const currentLesson = nextSegment || this.computedLessonNumber;
+      const currentLesson = nextSegment || this.computedBookLesson;
+
       // Validate and set the lesson number
       if (currentStudy) {
         this.languageStore.setLessonNumber(currentStudy, currentLesson);
