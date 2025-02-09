@@ -1,43 +1,36 @@
 <template>
   <q-page padding>
-    <h2>{{ $t(`${computedStudy}.book.title`) }}</h2>
-    <p>{{ $t(`${computedStudy}.book.para1`) }}</p>
-    <p>{{ $t(`${computedStudy}.book.para2`) }}</p>
-    <p>{{ $t(`${computedStudy}.book.para3`) }}</p>
+    <h2>{{ $t(`${route.params.study}.book.title`) }}</h2>
+    <p>{{ $t(`${route.params.study}.book.para1`) }}</p>
+    <p>{{ $t(`${route.params.study}.book.para2`) }}</p>
+    <p>{{ $t(`${route.params.study}.book.para3`) }}</p>
 
-    <div v-if="commonContent">
+
       <div>
         <SeriesPassageSelect
-          :topics="commonContent.topics"
+          :topics="topics"
           :lesson="computedLessonNumber"
           @showPassage="handleShowTeaching"
         />
       </div>
       <div>
         <SeriesSegmentNavigator
-          :study="study"
+          :study="route.params.study"
           :lesson="computedLessonNumber"
           @showTeaching="handleShowTeaching"
         />
       </div>
-    </div>
-    <div v-else>
-      Loading common content...
-    </div>
+
 
     <hr />
 
-    <div v-if="lessonContentRetrieved">
       <SeriesLessonContent
         :languageCodeHL="computedLanguage"
-        :study="computedStudy"
+        :study="route.params.study"
         :lesson="computedLessonNumber"
-        :commonContent = "commonContent"
+        :commonContent="commonContent"
       />
-    </div>
-    <div v-else>
-      Loading lesson content...
-    </div>
+
   </q-page>
 </template>
 
@@ -63,6 +56,7 @@ export default {
     const route = useRoute();
     const commonContent = ref(null); // Define reactive commonContent
     const lessonContentRetrieved = ref(false); // Handle loading lesson content
+    const topics = ref([]); //
 
     // Default values
     const DEFAULTS = {
@@ -86,39 +80,37 @@ export default {
       try {
         const content = await languageStore.loadCommonContent(currentLanguageCodeHL, currentStudy);
         commonContent.value = content;
+        // Transform the object into an array of { label, value } objects
+        topics.value = Object.entries(content.topic).map(([key, value]) => ({
+          label: parseInt(key) + '. '+ value,
+          value: parseInt(key),
+        }));
       } catch (error) {
         console.error('Failed to load common content:', error);
       }
     };
-
     // Load common content when the component mounts
     onMounted(loadCommonContent);
+      // Reactive computed property
+    const computedLanguage = computed(() => languageStore.getLanguageCodeHLSelected);
 
-    // Correctly use getters as computed properties
-    const computedLanguage = computed(() =>
-      languageStore.getters['getLanguageCodeHLSelected']);
-    
-    const computedStudy = computed(() =>
-      languageStore.getters['getCurrentStudy']);
-
-    const computedLessonNumber = computed(() =>
-      languageStore.getters['getLessonNumber'](computedStudy));
-
-
+    const computedLessonNumber = computed(() => languageStore.getLessonNumber);
 
     return {
       commonContent,
       computedLanguage,
       computedLessonNumber,
-      computedStudy,
       lessonContentRetrieved,
+      topics,
+      route,
     };
   },
 
   methods: {
     handleShowTeaching(nextSegment) {
-      const currentStudy = this.computedStudy;
       const currentLesson = nextSegment || this.computedLessonNumber;
+      const currentStudy = this.route.params.study;
+
       // Validate and set the lesson number
       if (currentStudy) {
         this.languageStore.setLessonNumber(currentStudy, currentLesson);

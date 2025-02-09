@@ -39,14 +39,12 @@ export const useLanguageStore = defineStore("languageStore", {
   }),
   getters: {
     getCurrentStudy() {
-      return 'dbs';
       let study = this.currentStudy || localStorage.getItem('currentStudy') || 'dbs';
 
       // If currentStudy exists, update localStorage
       if (this.currentStudy) {
         localStorage.setItem('currentStudy', this.currentStudy);
       }
-      alert ('getCurrentStudy says' + study)
       return study;
     },
     getFollowingHimSegment: (state) => {
@@ -55,7 +53,9 @@ export const useLanguageStore = defineStore("languageStore", {
       }
       return state.followingHimSegment
     },
-    getLessonNumber: (state) => (study) => {
+    getLessonNumber: (state) => {
+      const study = state.currentStudy; // Automatically use current study
+
       if (!state.lessonNumber.hasOwnProperty(study)) {
         console.warn(`Invalid study: ${study}`);
         return null;

@@ -8,7 +8,9 @@ export async function getCommonContent(language, study) {
   const localStoredContent = localStorage.getItem(cacheKey);
   if (localStoredContent) {
     console.log("Using cached content from localStorage for CommonContent.");
-    return JSON.parse(localStoredContent);
+    var parsed = JSON.parse(localStoredContent);
+    console.log (parsed.topic);
+    return parsed;
   }
 
   // Fallback: API call if content is not found locally

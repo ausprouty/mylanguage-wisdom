@@ -33,7 +33,6 @@ export default {
         label: "SELECT",
         value: 1,
       },
-      supportedPassages: [],
     };
   },
   watch: {
