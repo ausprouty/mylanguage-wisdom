@@ -1,23 +1,23 @@
 <template>
   <q-page padding>
-    <h2>{{ $t(`${route.params.study}.book.title`) }}</h2>
-    <p>{{ $t(`${route.params.study}.book.para1`) }}</p>
-    <p>{{ $t(`${route.params.study}.book.para2`) }}</p>
-    <p>{{ $t(`${route.params.study}.book.para3`) }}</p>
+    <h2>{{ $t(`${route.params.study}.title`) }}</h2>
+    <p>{{ $t(`${route.params.study}.para1`) }}</p>
+    <p>{{ $t(`${route.params.study}.para2`) }}</p>
+    <p>{{ $t(`${route.params.study}.para3`) }}</p>
 
 
       <div>
         <SeriesPassageSelect
           :topics="topics"
           :lesson="computedLessonNumber"
-          @showPassage="handleShowTeaching"
+          @updateLesson="updateLesson"
         />
       </div>
       <div>
         <SeriesSegmentNavigator
           :study="route.params.study"
           :lesson="computedLessonNumber"
-          @showTeaching="handleShowTeaching"
+          @updateLesson="updateLesson"
         />
       </div>
 
@@ -107,16 +107,8 @@ export default {
   },
 
   methods: {
-    handleShowTeaching(nextSegment) {
-      const currentLesson = nextSegment || this.computedLessonNumber;
-      const currentStudy = this.route.params.study;
-
-      // Validate and set the lesson number
-      if (currentStudy) {
-        this.languageStore.setLessonNumber(currentStudy, currentLesson);
-      } else {
-        console.warn('No valid study found while updating the lesson.');
-      }
+    updateLesson(nextLessonNumber) {
+      this.languageStore.setLessonNumber(this.route.params.study, nextLessonNumber);
     },
   },
 };

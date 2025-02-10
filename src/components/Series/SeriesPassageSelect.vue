@@ -6,7 +6,7 @@
       :options="topics"
       option-label="label"
       option-value="value"
-      @update:model-value="updatePassage"
+      @update:model-value="updateLessonNumber"
       label="Topic"
       class="select"
     />
@@ -50,9 +50,9 @@ export default {
 
   methods: {
 
-    updatePassage() {
+    updateLessonNumber() {
       this.languageStore.setLessonNumber(this.study, this.selectedValue.value);
-      this.$emit("showPassage", this.selectedValue.value);
+      this.$emit("updateLesson", this.selectedValue.value);
     },
     updateSelectBar(lesson) {
       if (Array.isArray(this.supportedPassages) && lesson > 0) {

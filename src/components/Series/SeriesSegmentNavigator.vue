@@ -50,12 +50,12 @@ export default {
     showNextLesson() {
       this.nextLesson = Number(this.currentLesson) + 1;
       this.languageStore.setLessonNumber(this.study, this.nextLesson);
-      this.$emit("showTeaching", this.nextLesson);
+      this.$emit("updateLesson", this.nextLesson);
     },
     showPreviousLesson() {
       this.nextLesson = Number(this.currentLesson) - 1;
       this.languageStore.setLessonNumber(this.study, this.nextLesson);
-      this.$emit("showTeaching", this.nextLesson);
+      this.$emit("updateLesson", this.nextLesson);
     },
   },
 };
