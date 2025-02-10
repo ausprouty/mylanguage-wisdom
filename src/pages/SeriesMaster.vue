@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useLanguageStore } from 'stores/LanguageStore';
 import { useRoute } from 'vue-router';
 
@@ -54,9 +54,8 @@ export default {
   setup() {
     const languageStore = useLanguageStore();
     const route = useRoute();
-    const commonContent = ref(null); // Define reactive commonContent
-    const lessonContentRetrieved = ref(false); // Handle loading lesson content
-    const topics = ref([]); //
+    const commonContent = ref(null);
+    const topics = ref([]);
 
     // Default values
     const DEFAULTS = {
@@ -76,31 +75,39 @@ export default {
     languageStore.updateLanguageSelected(currentLanguageCodeHL);
 
     // Async function to load common content
-    const loadCommonContent = async () => {
+    const loadCommonContent = async (languageCode = currentLanguageCodeHL) => {
       try {
-        const content = await languageStore.loadCommonContent(currentLanguageCodeHL, currentStudy);
+        const content = await languageStore.loadCommonContent(languageCode, currentStudy);
         commonContent.value = content;
+
         // Transform the object into an array of { label, value } objects
         topics.value = Object.entries(content.topic).map(([key, value]) => ({
-          label: parseInt(key) + '. '+ value,
+          label: `${parseInt(key)}. ${value}`,
           value: parseInt(key),
         }));
       } catch (error) {
         console.error('Failed to load common content:', error);
       }
     };
-    // Load common content when the component mounts
-    onMounted(loadCommonContent);
-      // Reactive computed property
-    const computedLanguage = computed(() => languageStore.getLanguageCodeHLSelected);
 
+    // Load common content when the component mounts
+    onMounted(() => {
+      loadCommonContent();
+    });
+
+    // Reactive computed properties
+    const computedLanguage = computed(() => languageStore.getLanguageCodeHLSelected);
     const computedLessonNumber = computed(() => languageStore.getLessonNumber);
+
+    // Watch for changes in computedLanguage and reload common content
+    watch(computedLanguage, (newLanguage) => {
+      loadCommonContent(newLanguage);
+    });
 
     return {
       commonContent,
       computedLanguage,
       computedLessonNumber,
-      lessonContentRetrieved,
       topics,
       route,
     };
@@ -112,4 +119,5 @@ export default {
     },
   },
 };
+
 </script>
