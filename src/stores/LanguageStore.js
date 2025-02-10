@@ -74,7 +74,7 @@ export const useLanguageStore = defineStore("languageStore", {
     getMaxLesson: (state) => (study) => {
       if (!state.maxLessonNumber.hasOwnProperty(study)) {
         console.warn(`Invalid study: ${study}`);
-        return null;
+        return 0;
       }
       return state.maxLessonNumber[study];
     },
