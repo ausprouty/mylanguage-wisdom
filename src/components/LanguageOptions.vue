@@ -1,60 +1,48 @@
 <template>
   <h4>Select Language</h4>
-
   <q-option-group
     v-model="selectedLanguage"
     type="radio"
     color="primary"
     :options="languageOptions"
+    @update:model-value="handleLanguageChange"
   />
 </template>
 
-<script>
-import { useLanguageStore } from "stores/LanguageStore";
-import { languages} from "/src/data/languages.js";
-export default {
-  name: "LanguageOptions",
-  setup() {
-    const languageStore = useLanguageStore();
-    return {
-      languageStore
-    };
-  },
-  data() {
-    return {
-      selectedLanguage: '',
-      languageOptions: [],
-      languageArray: [],
-      languageCodeHL: 'eng00',
-      languageCodeJF: '529'
-    };
-  },
-  watch: {
-    selectedLanguage: {
-      handler() {
-        for( var i = 0; i < this.languageOptions.length; i++){
-          if (this.languageOptions[i].value == this.selectedLanguage){
-            this.languageCodeJF = this.languageOptions[i].languageCodeJF;
-            this.languageCodeHL = this.languageOptions[i].languageCodeHL;
-            break;
-          }
-        }
-        this.languageStore.updateLanguageSelected(this.languageCodeHL, this.languageCodeJF);
-      },
-      deep: true,
-    },
-  },
-  created() {
-     // Use the static languages data
-    this.languageArray = languages;
-    this.languageStore.updateLanguages(this.languageArray); // Update store if necessary
-    this.languageOptions = this.languageArray.map((item) => ({
-      label: item.name + ' (' + item.ethnicName + ')',
-      value: item.id,
-      languageCodeHL: item.languageCodeHL,
-      languageCodeJF: item.languageCodeJF,
-    }));
-    this.selectedLanguage = this.languageStore.getLanguageValue;
-  },
+<script setup>
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useLanguageStore } from 'stores/LanguageStore';
+import { languages } from 'data/languages.js';
+
+const { availableLocales, locale, setLocaleMessage } = useI18n();
+const languageStore = useLanguageStore();
+
+const selectedLanguage = ref(languageStore.getLanguageValue);
+
+const languageOptions = computed(() =>
+  languages.map((item) => ({
+    label: `${item.name} (${item.ethnicName})`,
+    value: item.languageCodeHL,
+    languageCodeJF: item.languageCodeJF,
+  }))
+);
+
+const handleLanguageChange = async (languageCodeHL) => {
+  const selectedOption = languageOptions.value.find(
+    (option) => option.value === languageCodeHL
+  );
+
+  if (selectedOption) {
+    const { languageCodeJF } = selectedOption;
+
+    if (!availableLocales.includes(languageCodeHL)) {
+      const messages = await import(`../locales/${languageCodeHL}.json`);
+      setLocaleMessage(languageCodeHL, messages.default);
+    }
+
+    locale.value = languageCodeHL;
+    languageStore.updateLanguageSelected(languageCodeHL, languageCodeJF);
+  }
 };
 </script>
