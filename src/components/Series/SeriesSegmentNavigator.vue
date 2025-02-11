@@ -20,44 +20,35 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from "vue";
 import { useLanguageStore } from "stores/LanguageStore";
-export default {
-  name: "SeriesLessonNavigator",
-  props: {
-    study: String,
-    lesson: Number,
-  },
-  data() {
-    return {
-      minLesson: 1,
-      nextLesson: 0,
-    };
-  },
-  setup(props) {
-    const languageStore = useLanguageStore();
-    return {
-      languageStore,
-      maxLesson: languageStore.getMaxLesson(props.study),
-    };
-  },
-  computed: {
-    currentLesson() {
-      return this.languageStore.lessonNumber[this.study] || 1;
-    },
-  },
-  methods: {
-    showNextLesson() {
-      this.nextLesson = Number(this.currentLesson) + 1;
-      this.languageStore.setLessonNumber(this.study, this.nextLesson);
-      this.$emit("updateLesson", this.nextLesson);
-    },
-    showPreviousLesson() {
-      this.nextLesson = Number(this.currentLesson) - 1;
-      this.languageStore.setLessonNumber(this.study, this.nextLesson);
-      this.$emit("updateLesson", this.nextLesson);
-    },
-  },
+import { useEmit } from "vue";
+
+const props = defineProps({
+  study: String,
+  lesson: Number,
+});
+
+const emit = defineEmits(["updateLesson"]);
+
+const languageStore = useLanguageStore();
+const minLesson = ref(1);
+const maxLesson = computed(() => languageStore.getMaxLesson(props.study));
+const currentLesson = computed(
+  () => languageStore.lessonNumber[props.study] || 1
+);
+
+const showNextLesson = () => {
+  const nextLesson = currentLesson.value + 1;
+  languageStore.setLessonNumber(props.study, nextLesson);
+  emit("updateLesson", nextLesson);
+};
+
+const showPreviousLesson = () => {
+  const previousLesson = currentLesson.value - 1;
+  languageStore.setLessonNumber(props.study, previousLesson);
+  emit("updateLesson", previousLesson);
 };
 </script>
 

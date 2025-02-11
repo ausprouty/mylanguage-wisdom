@@ -13,7 +13,7 @@
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLanguageStore } from 'stores/LanguageStore';
-import { languages } from 'data/languages.js';
+import { languages } from '/src/data/languages.js';
 
 const { availableLocales, locale, setLocaleMessage } = useI18n();
 const languageStore = useLanguageStore();

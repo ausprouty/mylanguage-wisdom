@@ -46,47 +46,50 @@
   </q-page>
 </template>
 
-<script>
-import { legacyApi, currentApi } from "boot/axios";
-import { useLanguageStore } from "stores/LanguageStore";
-export default {
-  name: "IndexPage",
-  data() {
-    return {
-      selected: null,
-    };
-  },
-  setup() {
-    const languageStore = useLanguageStore();
-    return {
-      languageStore,
-    };
-  },
-  methods: {
-    handleImageClick(to) {
-      // Handle the click event, e.g., navigate to the specified route
-      this.$router.push(to);
-    },
-    openExternalWebsite() {
-      var url = "api/ask/" + this.languageStore.getLanguageCodeHLSelected;
-      console.log(url);
-      legacyApi.get(url).then((response) => {
-        var externalURL = "https://www.everyperson.com/contact.php";
-        if (typeof response.data.contactPage !== "undefined") {
-          externalURL = response.data.contactPage;
-        }
-        // Try to open the URL in a new tab or window
-        var newWindow = window.open(externalURL, "_blank");
-        // Check if the popup was blocked
-        if (!newWindow || newWindow.closed || typeof newWindow.closed === "undefined") {
-          console.warn("Popup was blocked, falling back to same window navigation.");
-          window.location.href = externalURL;  // Fallback to same window navigation
-        }
-      });
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { useLanguageStore } from 'stores/LanguageStore';
+import { legacyApi } from 'boot/axios';
+
+// Access the router instance
+const router = useRouter();
+
+// Access the i18n instance
+const { t } = useI18n();
+
+// Access the language store
+const languageStore = useLanguageStore();
+
+// Function to handle image click and navigate to the specified route
+const handleImageClick = (to) => {
+  router.push(to);
+};
+
+// Function to open an external website based on the selected language
+const openExternalWebsite = async () => {
+  const url = `api/ask/${languageStore.getLanguageCodeHLSelected}`;
+  console.log(url);
+  try {
+    const response = await legacyApi.get(url);
+    let externalURL = 'https://www.everyperson.com/contact.php';
+    if (response.data.contactPage) {
+      externalURL = response.data.contactPage;
     }
+    // Try to open the URL in a new tab or window
+    const newWindow = window.open(externalURL, '_blank');
+    // Check if the popup was blocked
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      console.warn('Popup was blocked, falling back to same window navigation.');
+      window.location.href = externalURL; // Fallback to same window navigation
+    }
+  } catch (error) {
+    console.error('Error fetching external URL:', error);
   }
-}
+};
 </script>
+
 <style scoped>
 .menu_item {
   margin-left: 10px;
