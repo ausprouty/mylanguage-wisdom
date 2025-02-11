@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md q-gutter-md q-flex">
     <div
-      v-if="this.currentSegmentId > this.minVideoId"
+      v-if="currentSegmentId > minVideoId"
       class="q-gutter-md q-flex items-center inline"
     >
       <q-btn
@@ -12,14 +12,14 @@
         aria-label="Previous"
         @click="showPreviousSegment"
       />
-      <span class="q-ml-md">{{$t("menu.previous")}}</span>
+      <span class="q-ml-md">{{ t('menu.previous') }}</span>
     </div>
     <q-space class="inline" />
     <div
-      v-if="this.currentSegmentId < this.maxVideoId"
+      v-if="currentSegmentId < maxVideoId"
       class="q-gutter-md q-flex items-center inline"
     >
-      <span class="q-mr-md">{{$t("menu.next")}}</span>
+      <span class="q-mr-md">{{ t('menu.next') }}</span>
       <q-btn
         flat
         dense
@@ -32,50 +32,38 @@
   </div>
 </template>
 
-<script>
-import { useLanguageStore } from "stores/LanguageStore";
-export default {
-  name: "JVideoSegmentController",
-  props: {
-    videoId: Number,
-  },
+<script setup>
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useLanguageStore } from 'stores/LanguageStore';
 
-  data() {
-    return {
-      minVideoId: 1,
-      maxVideoId: 61,
-      nextVideoId: 0,
+const props = defineProps({
+  videoId: Number,
+});
 
-    };
-  },
-  computed: {
-    currentSegmentId() {
-      return Number(this.languageStore.jVideoSegmentId);
-    },
-    languageCodeHL() {
-      return this.languageStore.getLanguageCodeHLSelected;
-    },
-  },
-  setup() {
-    const languageStore = useLanguageStore();
-    return {
-      languageStore,
-    };
-  },
-  methods: {
-    showNextSegment() {
-      this.nextVideoId = this.currentSegmentId + 1;
-      this.languageStore.updateJVideoSegmentId(this.nextVideoId);
-      this.$emit("showVideo", this.nextVideoId);
-    },
-    showPreviousSegment() {
-      this.nextVideoId = this.currentSegmentId - 1;
-      this.languageStore.updateJVideoSegmentId(this.nextVideoId);
-      this.$emit("showVideo", this.nextVideoId);
-    },
-  },
+const minVideoId = ref(1);
+const maxVideoId = ref(61);
+const nextVideoId = ref(0);
+
+const languageStore = useLanguageStore();
+const { t } = useI18n();
+
+const currentSegmentId = computed(() => Number(languageStore.jVideoSegmentId));
+const languageCodeHL = computed(() => languageStore.getLanguageCodeHLSelected);
+
+const showNextSegment = () => {
+  nextVideoId.value = currentSegmentId.value + 1;
+  languageStore.updateJVideoSegmentId(nextVideoId.value);
+  emit('showVideo', nextVideoId.value);
+};
+
+const showPreviousSegment = () => {
+  nextVideoId.value = currentSegmentId.value - 1;
+  languageStore.updateJVideoSegmentId(nextVideoId.value);
+  emit('showVideo', nextVideoId.value);
 };
 </script>
+
 <style scoped>
 .inline {
   display: inline-block;

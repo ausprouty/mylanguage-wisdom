@@ -1,47 +1,37 @@
 <template>
-  <div v-html="this.questions"></div>
+  <div v-html="questions"></div>
 </template>
-<script>
-import { legacyApi, currentApi } from "boot/axios";
-import { useLanguageStore } from "stores/LanguageStore";
-export default {
-  name: "JVideoQuestions",
-  setup() {
-    const languageStore = useLanguageStore();
-    return {
-      languageStore,
-    };
-  },
 
-  data() {
-    return {
-      questions: "",
-    };
-  },
-  watch: {
-    languageCodeHL: function (newLanguage, oldLanguage) {
-      if (newLanguage !== oldLanguage) {
-        this.showQuestions(newLanguage);
-      }
-    },
-  },
-  computed: {
-    languageCodeHL() {
-      return this.languageStore.getLanguageCodeHLSelected;
-    },
-  },
-  methods: {
-    showQuestions(languageCodeHL) {
-      var url = "api/jvideo/questions/" + languageCodeHL;
-      console.log(url);
-      legacyApi.get(url).then((response) => {
-        console.log(response);
-        this.questions = response.data;
-      });
-    },
-  },
-  created() {
-    this.showQuestions(this.languageCodeHL);
-  },
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue';
+import { legacyApi } from 'boot/axios';
+import { useLanguageStore } from 'stores/LanguageStore';
+
+const questions = ref('');
+
+const languageStore = useLanguageStore();
+
+const languageCodeHL = computed(() => languageStore.getLanguageCodeHLSelected);
+
+const showQuestions = async (languageCodeHL) => {
+  const url = `api/jvideo/questions/${languageCodeHL}`;
+  console.log(url);
+  try {
+    const response = await legacyApi.get(url);
+    console.log(response);
+    questions.value = response.data;
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+  }
 };
+
+watch(languageCodeHL, (newLanguage, oldLanguage) => {
+  if (newLanguage !== oldLanguage) {
+    showQuestions(newLanguage);
+  }
+});
+
+onMounted(() => {
+  showQuestions(languageCodeHL.value);
+});
 </script>

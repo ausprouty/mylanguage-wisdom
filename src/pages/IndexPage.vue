@@ -1,7 +1,7 @@
 <template>
   <q-page class="bg-white" padding>
-    <p>{{ $t("index.para1") }}</p>
-    <p>{{ $t("index.para2") }}</p>
+    <p>{{ t('index.para1') }}</p>
+    <p>{{ t('index.para2') }}</p>
     <table>
       <tr class="full-width">
         <td
@@ -30,10 +30,9 @@
         >
           <img class="menu_picture" src="menu/grand.webp" />
         </td>
-
         <td
           class="side-by-side"
-          @click="openExternalWebsite()"
+          @click="openExternalWebsite"
           clickable
           v-ripple
         >
@@ -47,7 +46,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useLanguageStore } from 'stores/LanguageStore';
