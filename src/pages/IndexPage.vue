@@ -1,7 +1,7 @@
 <template>
   <q-page class="bg-white" padding>
-    <p>{{ t('index.para1') }}</p>
-    <p>{{ t('index.para2') }}</p>
+    <p>{{ t('index.para.1') }}</p>
+    <p>{{ t('index.para.2') }}</p>
     <table>
       <tr class="full-width">
         <td

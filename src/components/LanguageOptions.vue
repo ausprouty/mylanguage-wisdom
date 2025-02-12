@@ -37,7 +37,7 @@ const handleLanguageChange = async (languageCodeHL) => {
     const { languageCodeJF } = selectedOption;
 
     if (!availableLocales.includes(languageCodeHL)) {
-      const messages = await import(`../locales/${languageCodeHL}.json`);
+      const messages = await import(`../i18n/${languageCodeHL}.json`);
       setLocaleMessage(languageCodeHL, messages.default);
     }
 
