@@ -1,9 +1,9 @@
 <template>
   <q-page padding>
-    <h2>{{ t(`${route.params.study}.title`) }}</h2>
-    <p>{{ t(`${route.params.study}.para1`) }}</p>
-    <p>{{ t(`${route.params.study}.para2`) }}</p>
-    <p>{{ t(`${route.params.study}.para3`) }}</p>
+    <h2>{{ t(`${currentStudy}.title`) }}</h2>
+    <p>{{ t(`${currentStudy}.para.1`) }}</p>
+    <p>{{ t(`${currentStudy}.para.2`) }}</p>
+    <p>{{ t(`${currentStudy}.para.3`) }}</p>
 
     <div>
       <SeriesPassageSelect

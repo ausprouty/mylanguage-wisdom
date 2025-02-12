@@ -71,7 +71,13 @@ module.exports = configure(function (ctx) {
             .resourceQuery(/blockType=i18n/)
             .type('javascript/auto')
             .use('i18n')
-              .loader('@intlify/vue-i18n-loader')
+              .loader('@intlify/vue-i18n-loader');
+      },
+      extendViteConf(viteConf) {
+        viteConf.define = {
+          ...viteConf.define,
+          __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false, // Set to true if detailed warnings are needed in production
+        };
       },
       env: {
         LEGACY_API: ctx.dev
