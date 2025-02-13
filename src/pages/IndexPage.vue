@@ -1,44 +1,46 @@
 <template>
   <q-page class="bg-white" padding>
-    <p>{{ t('index.para.1') }}</p>
-    <p>{{ t('index.para.2') }}</p>
+    <p>{{ t("index.para.1") }}</p>
+    <p>{{ t("index.para.2") }}</p>
     <table>
-      <tr class="full-width">
-        <td
-          class="side-by-side"
-          @click="handleImageClick('/source')"
-          clickable
-          v-ripple
-        >
-          <img class="menu_picture" src="menu/source.webp" />
-        </td>
-        <td
-          class="side-by-side"
-          @click="handleImageClick('/series/life')"
-          clickable
-          v-ripple
-        >
-          <img class="menu_picture" src="menu/wisdom.webp" />
-        </td>
-      </tr>
-      <tr class="full-width">
-        <td
-          class="side-by-side"
-          @click="handleImageClick('/series/dbs')"
-          clickable
-          v-ripple
-        >
-          <img class="menu_picture" src="menu/grand.webp" />
-        </td>
-        <td
-          class="side-by-side"
-          @click="openExternalWebsite"
-          clickable
-          v-ripple
-        >
-          <img class="menu_picture" src="menu/discover.webp" />
-        </td>
-      </tr>
+      <tbody>
+        <tr class="full-width">
+          <td
+            class="side-by-side"
+            @click="handleImageClick('/source')"
+            clickable
+            v-ripple
+          >
+            <img class="menu_picture" src="menu/source.webp" />
+          </td>
+          <td
+            class="side-by-side"
+            @click="handleImageClick('/series/life')"
+            clickable
+            v-ripple
+          >
+            <img class="menu_picture" src="menu/wisdom.webp" />
+          </td>
+        </tr>
+        <tr class="full-width">
+          <td
+            class="side-by-side"
+            @click="handleImageClick('/series/dbs')"
+            clickable
+            v-ripple
+          >
+            <img class="menu_picture" src="menu/grand.webp" />
+          </td>
+          <td
+            class="side-by-side"
+            @click="openExternalWebsite"
+            clickable
+            v-ripple
+          >
+            <img class="menu_picture" src="menu/discover.webp" />
+          </td>
+        </tr>
+      </tbody>
     </table>
     <br />
     <br />
@@ -46,10 +48,10 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { useLanguageStore } from 'stores/LanguageStore';
-import { legacyApi } from 'boot/axios';
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { useLanguageStore } from "stores/LanguageStore";
+import { legacyApi } from "boot/axios";
 
 // Access the router instance
 const router = useRouter();
@@ -71,19 +73,25 @@ const openExternalWebsite = async () => {
   console.log(url);
   try {
     const response = await legacyApi.get(url);
-    let externalURL = 'https://www.everyperson.com/contact.php';
+    let externalURL = "https://www.everyperson.com/contact.php";
     if (response.data.contactPage) {
       externalURL = response.data.contactPage;
     }
     // Try to open the URL in a new tab or window
-    const newWindow = window.open(externalURL, '_blank');
+    const newWindow = window.open(externalURL, "_blank");
     // Check if the popup was blocked
-    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-      console.warn('Popup was blocked, falling back to same window navigation.');
+    if (
+      !newWindow ||
+      newWindow.closed ||
+      typeof newWindow.closed === "undefined"
+    ) {
+      console.warn(
+        "Popup was blocked, falling back to same window navigation."
+      );
       window.location.href = externalURL; // Fallback to same window navigation
     }
   } catch (error) {
-    console.error('Error fetching external URL:', error);
+    console.error("Error fetching external URL:", error);
   }
 };
 </script>

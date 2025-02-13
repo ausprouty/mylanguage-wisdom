@@ -23,14 +23,13 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useLanguageStore } from "stores/LanguageStore";
-import { useEmit } from "vue";
 
 const props = defineProps({
   study: String,
   lesson: Number,
 });
 
-const emit = defineEmits(["updateLesson"]);
+const emit = defineEmits(["updateLesson"]); // ✅ Correct usage
 
 const languageStore = useLanguageStore();
 const minLesson = ref(1);
@@ -51,33 +50,3 @@ const showPreviousLesson = () => {
   emit("updateLesson", previousLesson);
 };
 </script>
-
-<style scoped>
-.align-right {
-  text-align: right;
-}
-
-.inline {
-  display: inline-block;
-}
-
-div.inline {
-  width: 50%;
-}
-
-.q-gutter-md,
-.q-mr-md,
-.q-ml-md {
-  margin-top: 0px;
-}
-
-.q-gutter-y-md,
-.q-gutter-md {
-  margin-top: 0px;
-}
-
-.q-gutter-y-md > *,
-.q-gutter-md > * {
-  margin-top: 0px;
-}
-</style>

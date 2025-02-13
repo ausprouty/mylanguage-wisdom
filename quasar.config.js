@@ -82,11 +82,11 @@ module.exports = configure(function (ctx) {
       env: {
         LEGACY_API: ctx.dev
           ? "http://localhost/mylanguage-namespaced/" // Legacy API in development
-          : "https://legacy-api.mylanguage.net.au/", // Legacy API in production
+          : "https://api.mylanguage.net.au/", // Legacy API in production
 
         CURRENT_API: ctx.dev
           ? "http://localhost/api_mylanguage/" // Current API in development
-          : "https://api.mylanguage.net.au/", // Current API in production
+          : "https://api2.mylanguage.net.au/", // Current API in production
       },
 
       vueRouterMode: "history", // available values: 'hash', 'history'
