@@ -15,7 +15,7 @@ export async function getCommonContent(language, study) {
 
   // Fallback: API call if content is not found locally
   const url = `/api/translate/commonContent/${language}/${study}`;
-  console.log("Fetching content from API:", url);
+  console.log("Fetching CommonContent from API:", url);
 
   try {
     const response = await currentApi.get(url, { timeout: 10000 });

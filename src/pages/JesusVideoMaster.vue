@@ -1,8 +1,8 @@
 <template>
   <q-page padding>
-    <h2>{{ t('life.title') }}</h2>
-    <p>{{ t('life.para.1') }}</p>
-    <p>{{ t('life.para.2') }}</p>
+    <h2>{{ t('jVideo.title') }}</h2>
+    <p>{{ t('jVideo.para.1') }}</p>
+    <p>{{ t('jVideo.para.2') }}</p>
     <div>
       <JVideoSegmentSelect
         :languageCodeHL="computedLanguageCodeHLSelected"

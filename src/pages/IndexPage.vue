@@ -7,7 +7,7 @@
         <tr class="full-width">
           <td
             class="side-by-side"
-            @click="handleImageClick('/source')"
+            @click="handleImageClick('/jvideo')"
             clickable
             v-ripple
           >

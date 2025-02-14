@@ -11,7 +11,7 @@ const routes = [
       },
       {
         name: "JesusVideoMaster",
-        path: "/video/:lesson?/:languageCodeHL?",
+        path: "/jvideo/:lesson?/:languageCodeHL?",
         component: () => import("src/pages/JesusVideoMaster.vue"),
       },
 

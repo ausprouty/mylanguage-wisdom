@@ -1,8 +1,8 @@
 <template>
-  <div class="q-pa-md q-gutter-md q-flex">
+  <div class="q-pa-md q-gutter-md q-flex justify-between items-center">
     <div
       v-if="currentLesson > minLesson"
-      class="q-gutter-md q-flex items-center inline"
+      class="q-flex items-center cursor-pointer"
       @click="showPreviousLesson"
     >
       <q-btn flat dense round icon="arrow_back" aria-label="Previous" />
@@ -11,7 +11,7 @@
 
     <div
       v-if="currentLesson < maxLesson"
-      class="q-gutter-md q-flex items-center inline align-right"
+      class="q-flex items-center cursor-pointer"
       @click="showNextLesson"
     >
       <span class="q-mr-md">Next</span>
