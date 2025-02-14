@@ -8,10 +8,10 @@ export const useLanguageStore = defineStore("languageStore", {
     commonContent: {}, // Will store content by language and study
     lessonContent:{}, // Will store content by language, study and lesson
     lessonNumber: {
-      dbs:null,
-      lead:null,
-      life:null,
-      jfilm:null,
+      dbs:1,
+      lead:1,
+      life:1,
+      jfilm:1,
     },
     maxLessonNumber:{
       dbs:23,
@@ -26,7 +26,7 @@ export const useLanguageStore = defineStore("languageStore", {
     jVideoSegments:{
       languageCodeHL: 'eng00',
       languageCodeJF: '529',
-      currentId: null,
+      currentId: 1,
       segments:[]
     },
     languages: [],

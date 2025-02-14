@@ -97,10 +97,10 @@ export default {
       var videoSource =
         'src="https://legacyApi.arclight.org/videoPlayerUrl?refId=1_529-jf6101-0-0&start=0&end=&playerStyle=default"';
       var segments = this.languageStore.getJVideoSegments;
-      //console.log (segments.segments);
-      for (var i = 0; i < segments.segments.length; i++) {
-        if (segments.segments[i].id == videoSegmentId) {
-          videoSource = segments.segments[i].src;
+      console.log (segments);
+      for (var i = 0; i < segments.length; i++) {
+        if (segments[i].id == videoSegmentId) {
+          videoSource = segments[i].src;
           console.log(videoSource);
           break;
         }
