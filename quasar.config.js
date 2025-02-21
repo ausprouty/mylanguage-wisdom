@@ -186,44 +186,46 @@ module.exports = configure(function (ctx) {
       swFilename: "sw.js",
       manifestFilename: "manifest.json",
       useCredentialsForManifestTag: false,
-      display: "standalone",
-      orientation: "portrait",
-      background_color: "#ffffff",
-      theme_color: "#027be3",
-      start_url:"/index",
-      icons: [
-        {
-          src: "icons/icon-128x128.png",
-          sizes: "128x128",
-          type: "image/png",
-        },
-        {
-          src: "icons/icon-192x192.png",
-          sizes: "192x192",
-          type: "image/png",
-        },
-        {
-          src: "icons/icon-256x256.png",
-          sizes: "256x256",
-          type: "image/png",
-        },
-        {
-          src: "icons/icon-384x384.png",
-          sizes: "384x384",
-          type: "image/png",
-        },
-        {
-          src: "icons/icon-512x512.png",
-          sizes: "512x512",
-          type: "image/png",
-        },
-      ],
-      // useFilenameHashes: true,
-      // extendGenerateSWOptions (cfg) {}
-      // extendInjectManifestOptions (cfg) {},
-      // extendManifestJson (json) {}
-      // extendPWACustomSWConf (esbuildConf) {}
+      manifest: {  // <-- Add this section
+        name: "Finding Wisdom",
+        short_name: "Finding Wisdom",  // <-- Define short_name here
+        description: "Finding Wisdom",
+        display: "standalone",
+        orientation: "portrait",
+        background_color: "#ffffff",
+        theme_color: "#027be3",
+        start_url: "/",  // <-- Ensure correct start_url
+        scope: "/",
+        icons: [
+          {
+            src: "icons/icon-128x128.png",
+            sizes: "128x128",
+            type: "image/png",
+          },
+          {
+            src: "icons/icon-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "icons/icon-256x256.png",
+            sizes: "256x256",
+            type: "image/png",
+          },
+          {
+            src: "icons/icon-384x384.png",
+            sizes: "384x384",
+            type: "image/png",
+          },
+          {
+            src: "icons/icon-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          }
+        ]
+      }
     },
+
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
     cordova: {

@@ -14,7 +14,6 @@ export function useCommonContent(study, initialLanguageCodeHL) {
         ? Object.entries(content.topic).map(([key, value]) => ({
             label: `${parseInt(key)}. ${value}`,
             value: parseInt(key),
-            videoCode: content.videoCode?.[key] || '',
           }))
         : [];
     } catch (error) {

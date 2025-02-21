@@ -19,13 +19,13 @@
     </div>
     <div>
       <JVideoPlayer
-        :topics="topics"
+        :videoContent="videoContent"
         :lesson="computedLessonNumber"
       />
     </div>
     <div>
       <JVideoQuestions
-        :commonContent="commonContent"
+        :videoContent="videoContent"
       />
     </div>
   </q-page>
@@ -75,7 +75,7 @@ languageStore.setLessonNumber(currentStudy, currentLesson);
 languageStore.updateLanguageSelected(currentLanguageCodeHL);
 
 // Initialize the composable
-const { commonContent, topics, loadCommonContent } = useCommonContent(currentStudy, currentLanguageCodeHL);
+const { videoContent, topics, loadVideoContent } = useVideoContent(currentStudy, currentLanguageCodeHL);
 
 // Reactive computed properties
 const computedLanguage = computed(() => languageStore.getLanguageCodeHLSelected);
@@ -83,12 +83,12 @@ const computedLessonNumber = computed(() => languageStore.getLessonNumber);
 
 // Load common content when the component mounts
 onMounted(() => {
-  loadCommonContent();
+  loadVideoContent();
 });
 
 // Watch for changes in computedLanguage and reload common content
 watch(computedLanguage, (newLanguage) => {
-  loadCommonContent(newLanguage);
+  loadVideoContent(newLanguage);
 });
 
 // Function to update the lesson number

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getCommonContent, getLessonContent } from 'src/services/TranslationService';
+import { getCommonContent, getLessonContent, getVideoContent} from 'src/services/TranslationService';
 
 export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
@@ -191,6 +191,34 @@ export const useLanguageStore = defineStore("languageStore", {
         console.error('Failed to fetch lesson content:', error);
         throw error;
       }
+    },
+    async loadCommonContent(language, study) {
+      // Avoid re-fetching if the content is already loaded
+      if (this.commonContent[language]?.[study]) {
+        return this.commonContent[language][study];
+      }
+      // Fetch commonContent from service
+      const content = await getCommonContent(language, study);
+      // Store it in the state
+      if (!this.commonContent[language]) {
+        this.commonContent[language] = {};
+      }
+      this.commonContent[language][study] = content;
+      return content;
+    },
+    async loadVideoContent(language, study) {
+      // Avoid re-fetching if the content is already loaded
+      if (this.VideoContent[language]?.[study]) {
+        return this.VideoContent[language][study];
+      }
+      // Fetch VideoContent from service
+      const content = await getVideoContent(language, study);
+      // Store it in the state
+      if (!this.VideoContent[language]) {
+        this.VideoContent[language] = {};
+      }
+      this.VideoContent[language][study] = content;
+      return content;
     },
     setCurrentStudy(study) {
         this.currentStudy = study;
