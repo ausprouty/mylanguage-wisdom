@@ -1,116 +1,50 @@
 <template>
-  <div class="arc-cont" v-html="this.videoIframe"></div>
+  <div class="arc-cont" v-html="videoIframe"></div>
 </template>
 
 <script>
-import { legacyApi, currentApi } from "boot/axios";
-import { useLanguageStore } from "stores/LanguageStore";
+import { ref, computed, watch, toRefs } from "vue";
+
 
 export default {
   name: "JVideoPlayer",
+  props: {
+    videoUrls: Object, // Object containing video URLs by lesson number
+    lesson: Number, // Computed lesson number
+  },
+  setup(props) {
+    const { videoUrls, lesson } = toRefs(props); // Ensure reactivity
 
-  data() {
-    return {
-      show1: false,
-      iframeStart: '<iframe id="guruplayer" ',
-      iframeEnd:
-        " allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>",
-      videoIframe: null,
-    };
-  },
-  setup() {
-    const languageStore = useLanguageStore();
-    return {
-      languageStore,
-    };
-  },
-  created() {
-    this.updateVideoShown();
-  },
-  watch: {
-    languageCodeHL: function (newLanguage, oldLanguage) {
-      if (newLanguage !== oldLanguage) {
-        this.updateVideoShown();
-      }
-    },
-    videoSegmentId: function (newVideoSegment, oldVideoSegment) {
-      if (newVideoSegment !== oldVideoSegment) {
-        this.updateVideoShown();
-      }
-    },
-  },
-  computed: {
-    languageCodeHL() {
-      return this.languageStore.getLanguageCodeHLSelected;
-    },
-    languageCodeJF() {
-      return this.languageStore.getLanguageCodeJFSelected;
-    },
-    videoSegmentId() {
-      return this.languageStore.getJVideoSegmentId;
-    },
-  },
-  methods: {
-    updateVideoShown() {
-      var segments = this.languageStore.getJVideoSegments;
-      // console.log ('this is segments')
-      //  console.log (segments)
-      if (segments == null || typeof segments == "undefined") {
-        // console.log ('I am getting new JV segments because there are not any')
-        this.getNewJVideoSegments();
-      }
-      if (
-        segments.languageCodeHL != this.languageStore.getLanguageCodeHLSelected
-      ) {
-        // console.log ('I am getting new JV segments because language changed')
-        this.getNewJVideoSegments();
+    const videoIframe = ref(null);
+    const iframeStart = '<iframe id="jplayer" ';
+    const iframeEnd =
+      " allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>";
+
+    // Compute the video URL based on lesson number
+    const videoUrl = computed(() => {
+      return videoUrls.value?.[lesson.value] ||
+            'https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default';
+    });
+
+    // Update the iframe content when lesson or video URL changes
+    const updateVideoIframe = () => {
+      if (videoUrl.value) {
+        videoIframe.value = `${iframeStart}src="${videoUrl.value}"${iframeEnd}`;
       } else {
-        // console.log ('I am NOT getting new JV segments because we have them')
-        this.updateVideoIframe();
+        videoIframe.value = null; // Clear if no video found
       }
-    },
-    getNewJVideoSegments() {
-      var url =
-        "api/jvideo/segments/" +
-        this.languageCodeHL +
-        "/" +
-        this.languageCodeJF;
-      console.log(url);
-      legacyApi.get(url).then((response) => {
-        this.segments = response.data;
-        console.log(this.segments);
-        console.log(this.languageCodeHL + "  " + this.languageCodeJF);
-        this.languageStore.updateJVideoSegments(
-          this.languageCodeHL,
-          this.languageCodeJF,
-          this.segments
-        );
-        this.updateVideoIframe();
-      });
-    },
-    updateVideoIframe() {
-      var videoSegmentId = this.videoSegmentId;
-      if (videoSegmentId == null || typeof videoSegmentId == "undefined") {
-        videoSegmentId = 1;
-      }
-      console.log("videosegmentid " + videoSegmentId);
-      var videoSource =
-        'src="https://legacyApi.arclight.org/videoPlayerUrl?refId=1_529-jf6101-0-0&start=0&end=&playerStyle=default"';
-      var segments = this.languageStore.getJVideoSegments;
-      console.log (segments);
-      for (var i = 0; i < segments.length; i++) {
-        if (segments[i].id == videoSegmentId) {
-          videoSource = segments[i].src;
-          console.log(videoSource);
-          break;
-        }
-      }
-      this.videoIframe = this.iframeStart + videoSource + this.iframeEnd;
-      //console.log(this.videoIframe);
-    },
+    };
+
+    // Watch for changes in lesson number and update the iframe
+    watch(() => props.lesson, updateVideoIframe, { immediate: true });
+
+    return {
+      videoIframe,
+    };
   },
 };
 </script>
+
 <style>
 .arc-cont {
   position: relative;

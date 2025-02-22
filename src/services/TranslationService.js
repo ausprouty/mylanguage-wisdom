@@ -3,6 +3,8 @@ import { currentApi } from "boot/axios";
 // services/TranslationService.js
 export async function getCommonContent(languageCodeHL, study) {
   const cacheKey = `${study}-${languageCodeHL}-commonContent`;
+  console.log ( languageCodeHL + ''+ study )
+  console.log (cacheKey);
 
   // Check local storage for cached content
   const localStoredContent = localStorage.getItem(cacheKey);

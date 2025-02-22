@@ -12,19 +12,19 @@
     </div>
     <div>
       <SeriesSegmentNavigator
-        :study="route.params.study"
+        :study="currentStudy"
         :lesson="computedLessonNumber"
         @updateLesson="updateLesson"
       />
     </div>
     <div>
-      <JVideoPlayer
-        :videoContent="videoContent"
+      <VideoPlayer
+        :videoUrls="videoUrls"
         :lesson="computedLessonNumber"
       />
     </div>
     <div>
-      <JVideoQuestions
+      <VideoQuestions
         :videoContent="videoContent"
       />
     </div>
@@ -32,10 +32,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'; // Add onMounted
+import { computed,watch, onMounted } from 'vue'; // Add onMounted
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useLanguageStore } from 'stores/LanguageStore';
+import { useCommonContent } from 'src/composables/useCommonContent';
+
 import VideoPlayer from 'src/components/Video/VideoPlayer.vue';
 import SeriesPassageSelect from 'src/components/Series/SeriesPassageSelect.vue';
 import SeriesSegmentNavigator from 'src/components/Series/SeriesSegmentNavigator.vue';
@@ -55,40 +57,41 @@ const props = defineProps({
   video:String,
   lesson: Number,
   languageCodeHL: String,
+  languageCodeJF: String,
 });
 
-// Default values
-const DEFAULTS = {
-  study: 'dbs',
-  lesson: '1',
-  languageCodeHL: 'eng00',
-};
-
-// Set defaults if parameters are not provided
-const currentStudy = route.params.study || DEFAULTS.study;
-const currentLesson = route.params.lesson || DEFAULTS.lesson;
-const currentLanguageCodeHL = route.params.languageCodeHL || DEFAULTS.languageCodeHL;
-
-// Update store on initial load
+// Use getters to fetch default values from the store
+const currentStudy = 'jvideo'
 languageStore.setCurrentStudy(currentStudy);
+const currentLesson = route.params.lesson || languageStore.getLessonNumber;
+const currentLanguageCodeHL = route.params.languageCodeHL || languageStore.getLanguageCodeHLSelected;
+const currentLanguageCodeJF = route.params.languageCodeJF || languageStore.getLanguageCodeJFSelected;
+
+
 languageStore.setLessonNumber(currentStudy, currentLesson);
-languageStore.updateLanguageSelected(currentLanguageCodeHL);
+languageStore.updateLanguageSelected(currentLanguageCodeHL, currentLanguageCodeJF);
+
 
 // Initialize the composable
-const { videoContent, topics, loadVideoContent } = useVideoContent(currentStudy, currentLanguageCodeHL);
-
+// Initialize the composable
+const { commonContent, topics, loadCommonContent } = useCommonContent(currentStudy, currentLanguageCodeHL);
+console.log ('topics')
+console.log (topics)
 // Reactive computed properties
-const computedLanguage = computed(() => languageStore.getLanguageCodeHLSelected);
+const computedLanguageHL = computed(() => languageStore.getLanguageCodeHLSelected);
 const computedLessonNumber = computed(() => languageStore.getLessonNumber);
+const computedVideoUrls = computed(() => languageStore.getJesusVideoUrls);
 
 // Load common content when the component mounts
-onMounted(() => {
-  loadVideoContent();
+onMounted(async () => {
+  await loadCommonContent();
+  console.log('Updated topics:', topics.value);
 });
 
+
 // Watch for changes in computedLanguage and reload common content
-watch(computedLanguage, (newLanguage) => {
-  loadVideoContent(newLanguage);
+watch(computedLanguageHL, (newLanguage) => {
+  loadCommonContent(newLanguage);
 });
 
 // Function to update the lesson number

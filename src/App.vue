@@ -13,7 +13,6 @@ export default defineComponent({
 
     // Check if user manually entered a URL
     if (currentPath && currentPath !== '/' && currentPath !== '/index') {
-      console.log('Manual URL entered:', currentPath);
       localStorage.setItem('currentPath', currentPath); // Update stored path
       return;
     }

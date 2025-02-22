@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getCommonContent, getLessonContent, getVideoContent} from 'src/services/TranslationService';
+import { getCommonContent, getLessonContent, getJesusVideoUrls} from 'src/services/TranslationService';
 
 export const useLanguageStore = defineStore("languageStore", {
   state: () => ({
@@ -7,32 +7,24 @@ export const useLanguageStore = defineStore("languageStore", {
     currentUrl:null,
     commonContent: {}, // Will store content by language and study
     lessonContent:{}, // Will store content by language, study and lesson
+    videoUrls:{},
     lessonNumber: {
       dbs:1,
       lead:1,
       life:1,
-      jfilm:1,
+      jvideo:1,
     },
     maxLessonNumber:{
       dbs:23,
       lead:25,
       life:23,
-      jfilm:61,
+      jvideo:61,
     },
 
-    // you record the languageCodeHL here so you only get
-    // new titles for the Jesus video when
-    // languageSelected.languageCodeHL changes
-    jVideoSegments:{
-      languageCodeHL: 'eng00',
-      languageCodeJF: '529',
-      currentId: 1,
-      segments:[]
-    },
     languages: [],
     languageSelected: {
       languageCodeHL: 'eng00',
-      languageCodeJF: 529,
+      languageCodeJF: '529',
       value: 3
     },
     previousPage: '/index'
@@ -90,18 +82,7 @@ export const useLanguageStore = defineStore("languageStore", {
       }
       return state.jVideoSegments.currentId
     },
-    getJVideoSegments: (state) => {
-      if (state.jVideoSegments == null || typeof state.jVideoSegments == 'undefined'){
-        var local = localStorage.getItem("jVideoSegments");
-        if (local  && local != 'undefined'){
-          state.jVideoSegments = JSON.parse(local)
-        }
-        else{
-          state.jVideoSegments = null;
-        }
-      }
-      return state.jVideoSegments.segments
-    },
+
     getLanguageCodeHLSelected: (state) => {
       if (!state.languageSelected) {
         // Attempt to retrieve from localStorage or fall back to the default
@@ -122,7 +103,7 @@ export const useLanguageStore = defineStore("languageStore", {
       }
       // Ensure a valid return value
       const languageCodeHL = state.languageSelected?.languageCodeHL || 'eng00';
-      console.log('getLanguageCodeHLSelected says ' + languageCodeHL);
+
       return languageCodeHL;
     },
     getLanguageCodeJFSelected: (state) => {
@@ -192,32 +173,18 @@ export const useLanguageStore = defineStore("languageStore", {
         throw error;
       }
     },
-    async loadCommonContent(language, study) {
+    async loadVideoUrls(language, study) {
       // Avoid re-fetching if the content is already loaded
-      if (this.commonContent[language]?.[study]) {
-        return this.commonContent[language][study];
+      if (this.videoUrls[language]?.[study]) {
+        return this.videoUrls[language][study];
       }
-      // Fetch commonContent from service
-      const content = await getCommonContent(language, study);
+      // Fetch videoUrls from service
+      const content = await getvideoUrls(language, study);
       // Store it in the state
-      if (!this.commonContent[language]) {
-        this.commonContent[language] = {};
+      if (!this.videoUrls[language]) {
+        this.videoUrls[language] = {};
       }
-      this.commonContent[language][study] = content;
-      return content;
-    },
-    async loadVideoContent(language, study) {
-      // Avoid re-fetching if the content is already loaded
-      if (this.VideoContent[language]?.[study]) {
-        return this.VideoContent[language][study];
-      }
-      // Fetch VideoContent from service
-      const content = await getVideoContent(language, study);
-      // Store it in the state
-      if (!this.VideoContent[language]) {
-        this.VideoContent[language] = {};
-      }
-      this.VideoContent[language][study] = content;
+      this.videoUrls[language][study] = content;
       return content;
     },
     setCurrentStudy(study) {
@@ -244,14 +211,6 @@ export const useLanguageStore = defineStore("languageStore", {
         }
       }
     },
-    updateJVideoSegments(languageCodeHL, languageCodeJF, segments){
-      var jVideoSegments ={ }
-      jVideoSegments.languageCodeHL = languageCodeHL
-      jVideoSegments.languageCodeJF = languageCodeJF
-      jVideoSegments.segments = segments;
-      localStorage.setItem('jVideoSegments', JSON.stringify(jVideoSegments));
-      this.jVideoSegments = jVideoSegments
-    },
     updateLanguages(newValue) {
       var languages = JSON.stringify(newValue);
       localStorage.setItem('languages', languages);
@@ -262,6 +221,7 @@ export const useLanguageStore = defineStore("languageStore", {
       localStorage.setItem('languageSelected', JSON.stringify(this.languageSelected));
     },
     updateLanguageCodeJFSelected(languageCodeJF){
+
       this.languageSelected.languageCodeJF = languageCodeJF;
       localStorage.setItem('languageSelected', JSON.stringify(this.languageSelected));
     },
