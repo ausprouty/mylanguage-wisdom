@@ -5,13 +5,13 @@
     <section v-if="commonContent">
       <SharedContentSection
         :content="commonContent.look_back"
-        sectionKey="dbsBack"
+        :sectionKey="sectionKeyBack"
         placeholder="Write your notes for Look Back here"
       />
 
       <SharedContentSection
         :content="commonContent.look_up"
-        sectionKey="dbsUp"
+        :sectionKey="sectionKeyUp"
         placeholder="Write your notes for Look Up here"
         :biblePassage="lessonContent.bibleBlock.passage"
         :passageReference="passageReference"
@@ -19,7 +19,7 @@
 
       <SharedContentSection
         :content="commonContent.look_forward"
-        sectionKey="dbsForward"
+        :sectionKey="sectionKeyForward"
         placeholder="Write your notes for Look Forward here"
       />
     </section>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useLanguageStore } from "stores/LanguageStore";
 import SharedContentSection from "src/components/SharedContentSection.vue";
 
@@ -45,6 +45,12 @@ export default {
     const lessonContent = ref(null);
     const passageReference = ref("No reference found");
 
+    // ✅ Computed section keys (Updates when study or lesson changes)
+    const sectionKeyBack = computed(() => `${props.study}-${props.lesson}-back`);
+    const sectionKeyUp = computed(() => `${props.study}-${props.lesson}-up`);
+    const sectionKeyForward = computed(() => `${props.study}-${props.lesson}-forward`);
+
+    // ✅ Load lesson content
     const loadLessonContent = async () => {
       try {
         lessonContent.value = await languageStore.loadLessonContent(
@@ -58,12 +64,19 @@ export default {
       }
     };
 
+    // ✅ Update passage reference when lesson content changes
     const updatePassageReference = () => {
-      const reference =
-        lessonContent.value?.bibleBlock.passage.referenceLocalLanguage || "";
+      const reference = lessonContent.value?.bibleBlock.passage.referenceLocalLanguage || "";
       passageReference.value = reference || "No reference found";
     };
 
+    // ✅ Watch for lesson changes and reload content
+    watch(() => props.lesson, async (newLesson, oldLesson) => {
+      console.log(`🔄 Lesson changed from ${oldLesson} to ${newLesson}. Reloading content...`);
+      await loadLessonContent();
+    });
+
+    // ✅ Load content when the component mounts
     onMounted(() => {
       loadLessonContent();
     });
@@ -71,6 +84,9 @@ export default {
     return {
       lessonContent,
       passageReference,
+      sectionKeyBack,
+      sectionKeyUp,
+      sectionKeyForward,
     };
   },
 };

@@ -7,7 +7,7 @@
       @click="showPreviousLesson"
     >
       <q-btn flat dense round icon="arrow_back" aria-label="Previous" />
-      <span >Previous</span>
+      <span>Previous</span>
     </div>
 
     <!-- Next Button -->
@@ -36,22 +36,25 @@ const emit = defineEmits(["updateLesson"]);
 const languageStore = useLanguageStore();
 const minLesson = ref(1);
 const maxLesson = computed(() => languageStore.getMaxLesson(props.study));
-const currentLesson = computed(
-  () => languageStore.lessonNumber[props.study] || 1
-);
+
+// ✅ Ensure `currentLesson` is always a number
+const currentLesson = computed(() => {
+  const lesson = languageStore.lessonNumber[props.study] || 1;
+  return Number(lesson); // Convert to number to avoid string concatenation issue
+});
 
 const showNextLesson = () => {
   const nextLesson = currentLesson.value + 1;
-  console.log (props.study)
-  console.log (nextLesson)
+  console.log("Study:", props.study);
+  console.log("Next Lesson:", nextLesson);
   languageStore.setLessonNumber(props.study, nextLesson);
   emit("updateLesson", nextLesson);
 };
 
 const showPreviousLesson = () => {
   const previousLesson = currentLesson.value - 1;
-  console.log (props.study)
-  console.log (previousLesson)
+  console.log("Study:", props.study);
+  console.log("Previous Lesson:", previousLesson);
   languageStore.setLessonNumber(props.study, previousLesson);
   emit("updateLesson", previousLesson);
 };
@@ -67,16 +70,12 @@ const showPreviousLesson = () => {
   position: relative;
   padding: 40px 20px; /* Space above and below */
 }
- .q-ml-md {
-  background-color:#3498db; /* Red background */
-
-}
 
 /* Styles for rounded navigation buttons */
 .nav-button {
   display: flex;
   align-items: center;
-  background-color:#3498db; /* Red background */
+  background-color: #3498db; /* Blue background */
   color: white; /* White text */
   padding: 5px 15px; /* Spacing inside the button */
   border-radius: 50px; /* Makes it rounded */

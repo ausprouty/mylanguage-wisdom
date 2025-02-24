@@ -85,7 +85,7 @@ const { commonContent, topics, loadCommonContent } = useCommonContent(currentStu
 const computedLanguageHL = computed(() => languageStore.getLanguageCodeHLSelected);
 const computedLessonNumber = computed(() => languageStore.getLessonNumber);
 const computedLanguageJF = computed(() => languageStore.getLanguageCodeJFSelected);
-const computedSectionKey = computed(() => `video-${computedLessonNumber.value}-${computedLanguageHL.value}`);
+const computedSectionKey = computed(() => `video-${computedLessonNumber.value}`);
 
 
 
