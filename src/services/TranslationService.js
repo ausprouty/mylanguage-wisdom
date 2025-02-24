@@ -8,7 +8,6 @@ export async function getCommonContent(languageCodeHL, study) {
   if (localStoredContent) {
     console.log("Using cached content from localStorage for CommonContent.");
     var parsed = JSON.parse(localStoredContent);
-    console.log (parsed.topic);
     return parsed;
   }
   // Fallback: API call if content is not found locally
@@ -77,7 +76,7 @@ export async function getJesusVideoUrls(languageCodeJF) {
 
   // Check local storage for cached content
   const localStoredContent = localStorage.getItem(cacheKey);
-  console.log (localStoredContent)
+
   if (localStoredContent) {
     console.log("Using cached content from localStorage for videoContent.");
     return JSON.parse(localStoredContent);

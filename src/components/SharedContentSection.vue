@@ -1,10 +1,4 @@
 <template>
-<!-- this component will:
-   Load notes from localStorage on mount.
-   Save notes to localStorage when they change.
-   Use sectionKey to store unique notes per section.-->
-
-   
   <section v-if="content">
     <h2 class="ltr dbs">{{ content.title }}</h2>
     <ol class="ltr dbs">
@@ -49,17 +43,31 @@ export default {
 
     // Load notes from localStorage
     const loadNotes = () => {
+      console.log("🔄 Loading notes for sectionKey:", props.sectionKey);
       const storedNotes = localStorage.getItem(`notes-${props.sectionKey}`);
+
       if (storedNotes) {
+        console.log("✅ Found stored notes:", storedNotes);
         note.value = storedNotes;
+      } else {
+        console.log("❌ No notes found, clearing note input.");
+        note.value = ""; // Clear notes when sectionKey changes
       }
     };
 
-    // Watch for changes and save to localStorage
+    // Watch `sectionKey` and reload notes when it changes
+    watch(() => props.sectionKey, (newKey, oldKey) => {
+      console.log(`🔄 SectionKey changed from '${oldKey}' to '${newKey}'`);
+      loadNotes();
+    });
+
+    // Watch for changes in `note` and save to localStorage
     watch(note, (newNote) => {
+      console.log("💾 Saving notes for", props.sectionKey, ":", newNote);
       localStorage.setItem(`notes-${props.sectionKey}`, newNote);
     });
 
+    // Load notes on component mount
     onMounted(() => {
       loadNotes();
     });

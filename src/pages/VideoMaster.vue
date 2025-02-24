@@ -27,6 +27,9 @@
     <div>
       <VideoQuestions
         :commonContent="commonContent"
+        :languageCodeHL = "computedLanguageHL"
+        :lesson = "computedLessonNumber"
+        :sectionKey="computedSectionKey"
       />
     </div>
   </q-page>
@@ -70,6 +73,8 @@ const currentLesson = route.params.lesson || languageStore.getLessonNumber;
 const currentLanguageCodeHL = route.params.languageCodeHL || languageStore.getLanguageCodeHLSelected;
 const currentLanguageCodeJF = route.params.languageCodeJF || languageStore.getLanguageCodeJFSelected;
 
+
+
 languageStore.setLessonNumber(currentStudy, currentLesson);
 languageStore.updateLanguageSelected(currentLanguageCodeHL, currentLanguageCodeJF);
 
@@ -80,6 +85,9 @@ const { commonContent, topics, loadCommonContent } = useCommonContent(currentStu
 const computedLanguageHL = computed(() => languageStore.getLanguageCodeHLSelected);
 const computedLessonNumber = computed(() => languageStore.getLessonNumber);
 const computedLanguageJF = computed(() => languageStore.getLanguageCodeJFSelected);
+const computedSectionKey = computed(() => `video-${computedLessonNumber.value}-${computedLanguageHL.value}`);
+
+
 
 // 🔹 Reactive video URLs
 const videoUrls = ref([]);
@@ -87,9 +95,7 @@ const videoUrls = ref([]);
 // ✅ Function to load video URLs
 const loadVideoUrls = async () => {
   try {
-    console.log('Loading video URLs...');
     videoUrls.value = await languageStore.loadVideoUrls(computedLanguageJF.value, currentStudy);
-    console.log('Loaded video URLs:', videoUrls.value);
   } catch (error) {
     console.error('Error loading video URLs:', error);
   }
@@ -97,6 +103,7 @@ const loadVideoUrls = async () => {
 
 // Load common content when the component mounts
 onMounted(async () => {
+
   await loadCommonContent();
   await loadVideoUrls();  // Ensures video URLs load at startup
 });
@@ -114,6 +121,9 @@ watch(computedLanguageHL, async (newLanguage) => {
 // Function to update the lesson number
 const updateLesson = (nextLessonNumber) => {
   languageStore.setLessonNumber(currentStudy, nextLessonNumber);
+  console.log (computedSectionKey)
+  console.log("Lesson updated:", nextLessonNumber);
+  console.log("New computedSectionKey:", computedSectionKey.value); // Check if it updates
 };
 </script>
 

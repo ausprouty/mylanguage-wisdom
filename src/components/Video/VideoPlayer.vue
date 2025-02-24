@@ -24,7 +24,7 @@ export default {
     const videoUrl = computed(() => {
       if (!videoUrls.value) return "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
 
-      const foundVideo = videoUrls.value.find(v => v.index === index.value);
+      const foundVideo = videoUrls.value.find(v => v.index === lesson.value);
 
       return foundVideo ? foundVideo.url : "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
     });
@@ -34,8 +34,11 @@ export default {
     const updateVideoIframe = () => {
       if (videoUrl.value) {
         videoIframe.value = `${iframeStart}src="${videoUrl.value}"${iframeEnd}`;
+        console.log (videoIframe.value);
       } else {
+
         videoIframe.value = null; // Clear if no video found
+        console.log (videoIframe.value);
       }
     };
 
