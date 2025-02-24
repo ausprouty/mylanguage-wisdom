@@ -26,7 +26,7 @@
     </div>
     <div>
       <VideoQuestions
-        :videoContent="videoContent"
+        :commonContent="commonContent"
       />
     </div>
   </q-page>

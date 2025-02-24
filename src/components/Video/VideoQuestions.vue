@@ -1,17 +1,21 @@
 <template>
   <div>
-    <ol class="ltr dbs">
-      <li
-        v-for="(item, index) in commonContent.question"
-        :key="'question-' + index"
-      >
-        {{ item }}
-      </li>
-    </ol>
-    <textarea
-      class="jvideo notes"
-      v-model="textBlocks.video"
+    <SharedContentSection
+      :content="commonContent"
+      sectionKey="video"
       placeholder="Write your notes for this video here"
-    ></textarea>
+    />
   </div>
 </template>
+
+<script>
+import SharedContentSection from "src/components/SharedContentSection.vue";
+
+export default {
+  name: "VideoPlayerContent",
+  components: { SharedContentSection },
+  props: {
+    commonContent: { type: Object, required: true },
+  },
+};
+</script>
