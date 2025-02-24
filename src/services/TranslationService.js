@@ -3,9 +3,6 @@ import { currentApi } from "boot/axios";
 // services/TranslationService.js
 export async function getCommonContent(languageCodeHL, study) {
   const cacheKey = `${study}-${languageCodeHL}-commonContent`;
-  console.log ( languageCodeHL + ''+ study )
-  console.log (cacheKey);
-
   // Check local storage for cached content
   const localStoredContent = localStorage.getItem(cacheKey);
   if (localStoredContent) {
@@ -14,7 +11,6 @@ export async function getCommonContent(languageCodeHL, study) {
     console.log (parsed.topic);
     return parsed;
   }
-
   // Fallback: API call if content is not found locally
   const url = `/api/translate/commonContent/${languageCodeHL}/${study}`;
   console.log("Fetching CommonContent from API:", url);
@@ -78,15 +74,17 @@ export async function getLessonContent(languageCodeHL, study, lesson) {
 // services/TranslationService.js
 export async function getJesusVideoUrls(languageCodeJF) {
   const cacheKey = `jvideo-${languageCodeJF}-videoUrls`;
+
   // Check local storage for cached content
   const localStoredContent = localStorage.getItem(cacheKey);
+  console.log (localStoredContent)
   if (localStoredContent) {
     console.log("Using cached content from localStorage for videoContent.");
     return JSON.parse(localStoredContent);
   }
 
   // Fallback: API call if content is not found locally
-  const url = `api/translate/videoUrls/jvideo/{/${languageCodeJF}`;
+  const url = `api/translate/videoUrls/jvideo/${languageCodeJF}`;
   console.log("Fetching lesson content from API:", url);
 
   try {

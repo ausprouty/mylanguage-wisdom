@@ -7,6 +7,7 @@
 
     <div>
       <SeriesPassageSelect
+        :study = "route.params.study"
         :topics="topics"
         :lesson="computedLessonNumber"
         @updateLesson="updateLesson"

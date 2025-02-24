@@ -178,8 +178,9 @@ export const useLanguageStore = defineStore("languageStore", {
       if (this.videoUrls[language]?.[study]) {
         return this.videoUrls[language][study];
       }
+      console.log ('loadingVideoUrls');
       // Fetch videoUrls from service
-      const content = await getvideoUrls(language, study);
+      const content = await getJesusVideoUrls(language, study);
       // Store it in the state
       if (!this.videoUrls[language]) {
         this.videoUrls[language] = {};

@@ -5,7 +5,6 @@
 <script>
 import { ref, computed, watch, toRefs } from "vue";
 
-
 export default {
   name: "JVideoPlayer",
   props: {
@@ -21,10 +20,15 @@ export default {
       " allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>";
 
     // Compute the video URL based on lesson number
+    // videoUrls looks like: {index: 6, url: 'https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6106-0-0&playerStyle=default'}
     const videoUrl = computed(() => {
-      return videoUrls.value?.[lesson.value] ||
-            'https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default';
+      if (!videoUrls.value) return "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
+
+      const foundVideo = videoUrls.value.find(v => v.index === index.value);
+
+      return foundVideo ? foundVideo.url : "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
     });
+
 
     // Update the iframe content when lesson or video URL changes
     const updateVideoIframe = () => {

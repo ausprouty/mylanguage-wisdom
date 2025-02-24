@@ -5,6 +5,7 @@
     <p>{{ t('jVideo.para.2') }}</p>
     <div>
       <SeriesPassageSelect
+        :study="currentStudy"
         :topics="topics"
         :lesson="computedLessonNumber"
         @updateLesson="updateLesson"
@@ -32,7 +33,7 @@
 </template>
 
 <script setup>
-import { computed,watch, onMounted } from 'vue'; // Add onMounted
+import { ref, computed, watch, watchEffect, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useLanguageStore } from 'stores/LanguageStore';
@@ -54,44 +55,60 @@ const languageStore = useLanguageStore();
 
 // Props
 const props = defineProps({
-  video:String,
+  video: String,
   lesson: Number,
   languageCodeHL: String,
   languageCodeJF: String,
 });
 
-// Use getters to fetch default values from the store
-const currentStudy = 'jvideo'
+// Static study name
+const currentStudy = 'jvideo';
+
+// Set initial values in store
 languageStore.setCurrentStudy(currentStudy);
 const currentLesson = route.params.lesson || languageStore.getLessonNumber;
 const currentLanguageCodeHL = route.params.languageCodeHL || languageStore.getLanguageCodeHLSelected;
 const currentLanguageCodeJF = route.params.languageCodeJF || languageStore.getLanguageCodeJFSelected;
 
-
 languageStore.setLessonNumber(currentStudy, currentLesson);
 languageStore.updateLanguageSelected(currentLanguageCodeHL, currentLanguageCodeJF);
 
-
-// Initialize the composable
 // Initialize the composable
 const { commonContent, topics, loadCommonContent } = useCommonContent(currentStudy, currentLanguageCodeHL);
-console.log ('topics')
-console.log (topics)
+
 // Reactive computed properties
 const computedLanguageHL = computed(() => languageStore.getLanguageCodeHLSelected);
 const computedLessonNumber = computed(() => languageStore.getLessonNumber);
-const computedVideoUrls = computed(() => languageStore.getJesusVideoUrls);
+const computedLanguageJF = computed(() => languageStore.getLanguageCodeJFSelected);
+
+// 🔹 Reactive video URLs
+const videoUrls = ref([]);
+
+// ✅ Function to load video URLs
+const loadVideoUrls = async () => {
+  try {
+    console.log('Loading video URLs...');
+    videoUrls.value = await languageStore.loadVideoUrls(computedLanguageJF.value, currentStudy);
+    console.log('Loaded video URLs:', videoUrls.value);
+  } catch (error) {
+    console.error('Error loading video URLs:', error);
+  }
+};
 
 // Load common content when the component mounts
 onMounted(async () => {
   await loadCommonContent();
-  console.log('Updated topics:', topics.value);
+  await loadVideoUrls();  // Ensures video URLs load at startup
 });
 
-
+// ✅ Watch `computedLanguageJF` and update video URLs when it changes
+watch(computedLanguageJF, async (newLanguageJF) => {
+  console.log('Language changed:', newLanguageJF);
+  await loadVideoUrls();
+});
 // Watch for changes in computedLanguage and reload common content
-watch(computedLanguageHL, (newLanguage) => {
-  loadCommonContent(newLanguage);
+watch(computedLanguageHL, async (newLanguage) => {
+  await loadCommonContent(newLanguage);
 });
 
 // Function to update the lesson number
@@ -99,6 +116,7 @@ const updateLesson = (nextLessonNumber) => {
   languageStore.setLessonNumber(currentStudy, nextLessonNumber);
 };
 </script>
+
 
 <style>
 .q-page {

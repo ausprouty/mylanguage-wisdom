@@ -18,6 +18,7 @@ import { ref, onMounted, watch } from "vue";
 import { useLanguageStore } from "stores/LanguageStore";
 
 const props = defineProps({
+  study: String,
   topics: Array,
   lesson: Number,
 });
