@@ -3,21 +3,25 @@
     <h1 class="title dbs">{{ lessonContent.title }}</h1>
 
     <section v-if="commonContent">
-      <SharedContentSection
+      <DbsQuestions
         :content="commonContent.look_back"
         :sectionKey="sectionKeyBack"
         placeholder="Write your notes for Look Back here"
       />
 
-      <SharedContentSection
+      <DbsQuestions
         :content="commonContent.look_up"
         :sectionKey="sectionKeyUp"
         placeholder="Write your notes for Look Up here"
+
+      />
+      <BibleText
         :biblePassage="lessonContent.bibleBlock.passage"
         :passageReference="passageReference"
+        :translation = "lessonContent.bibleBlock.translation"
       />
 
-      <SharedContentSection
+      <DbsQuestions
         :content="commonContent.look_forward"
         :sectionKey="sectionKeyForward"
         placeholder="Write your notes for Look Forward here"
@@ -29,11 +33,12 @@
 <script>
 import { ref, computed, watch, onMounted } from "vue";
 import { useLanguageStore } from "stores/LanguageStore";
-import SharedContentSection from "src/components/SharedContentSection.vue";
+import DbsQuestions from "src/components/DbsQuestions.vue";
+import BibleText from "src/components/BibleTextDisplayed.vue";
 
 export default {
   name: "SeriesLessonContent",
-  components: { SharedContentSection },
+  components: { DbsQuestions, BibleText },
   props: {
     languageCodeHL: { type: String, required: true },
     study: { type: String, required: true },
@@ -46,9 +51,13 @@ export default {
     const passageReference = ref("No reference found");
 
     // ✅ Computed section keys (Updates when study or lesson changes)
-    const sectionKeyBack = computed(() => `${props.study}-${props.lesson}-back`);
+    const sectionKeyBack = computed(
+      () => `${props.study}-${props.lesson}-back`
+    );
     const sectionKeyUp = computed(() => `${props.study}-${props.lesson}-up`);
-    const sectionKeyForward = computed(() => `${props.study}-${props.lesson}-forward`);
+    const sectionKeyForward = computed(
+      () => `${props.study}-${props.lesson}-forward`
+    );
 
     // ✅ Load lesson content
     const loadLessonContent = async () => {
@@ -66,15 +75,25 @@ export default {
 
     // ✅ Update passage reference when lesson content changes
     const updatePassageReference = () => {
-      const reference = lessonContent.value?.bibleBlock.passage.referenceLocalLanguage || "";
-      passageReference.value = reference || "No reference found";
+      const reference =
+        lessonContent.value?.bibleBlock.passage.referenceLocalLanguage || "";
+        passageReference.value = reference || "No reference found";
     };
 
-    // ✅ Watch for lesson changes and reload content
-    watch(() => props.lesson, async (newLesson, oldLesson) => {
-      console.log(`🔄 Lesson changed from ${oldLesson} to ${newLesson}. Reloading content...`);
-      await loadLessonContent();
-    });
+    // ✅ Watch for lesson OR language change
+    watch(
+      () => [props.lesson, props.languageCodeHL],
+      async ([newLesson, newLanguage], [oldLesson, oldLanguage]) => {
+        console.log(
+          `🔄 Lesson changed from ${oldLesson} to ${newLesson}, or language changed from ${oldLanguage} to ${newLanguage}. Reloading content...`
+        );
+        await loadLessonContent();
+      }
+    );
+
+    // ✅ Watch for lessonContent changes to update passage reference
+    watch(lessonContent, updatePassageReference);
+
 
     // ✅ Load content when the component mounts
     onMounted(() => {

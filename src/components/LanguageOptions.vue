@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLanguageStore } from 'stores/LanguageStore';
 import { languages } from '/src/data/languages.js';
@@ -18,23 +18,32 @@ import { languages } from '/src/data/languages.js';
 const { availableLocales, locale, setLocaleMessage } = useI18n();
 const languageStore = useLanguageStore();
 
-const selectedLanguage = ref(languageStore.getLanguageValue);
+// Use state directly from Pinia store (no function call)
+const selectedLanguage = ref(languageStore.selectedLanguage);
 
+// Compute language options list
 const languageOptions = computed(() =>
   languages.map((item) => ({
     label: `${item.name} (${item.ethnicName})`,
-    value: item.languageCodeHL,
+    value: item.id, // This is the ID used in v-model
     languageCodeJF: item.languageCodeJF,
+    languageCodeHL: item.languageCodeHL
   }))
 );
 
-const handleLanguageChange = async (languageCodeHL) => {
+// Watch for store updates to sync `selectedLanguage`
+watch(() => languageStore.selectedLanguage, (newVal) => {
+  selectedLanguage.value = newVal;
+});
+
+// Handle language change
+const handleLanguageChange = async (selectedLanguageId) => {
   const selectedOption = languageOptions.value.find(
-    (option) => option.value === languageCodeHL
+    (option) => option.value === selectedLanguageId
   );
 
   if (selectedOption) {
-    const { languageCodeJF } = selectedOption;
+    const { languageCodeHL, languageCodeJF } = selectedOption;
 
     if (!availableLocales.includes(languageCodeHL)) {
       const messages = await import(`../i18n/${languageCodeHL}.json`);
@@ -42,7 +51,7 @@ const handleLanguageChange = async (languageCodeHL) => {
     }
 
     locale.value = languageCodeHL;
-    console.log ('language options is updating language selelctd');
+    console.log('Language options is updating language selected');
     languageStore.updateLanguageSelected(languageCodeHL, languageCodeJF);
   }
 };

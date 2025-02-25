@@ -43,7 +43,8 @@
       </tbody>
     </table>
     <br />
-    <br />
+    <br /><p class="icon"><img class="icon" src="images/settings.png" @click="handleImageClick('/reset')"
+      clickable /></p>
   </q-page>
 </template>
 
@@ -118,5 +119,11 @@ td.side-by-side {
 }
 tr.full-width {
   width: 100%;
+}
+p.icon{
+  text-align: center;
+}
+img.icon{
+  height: 30px;
 }
 </style>

@@ -26,6 +26,11 @@ const routes = [
         path: "/questions",
         component: () => import("src/pages/RestorePage.vue"),
       },
+      {
+        name: "reset",
+        path: "/reset",
+        component: () => import("pages/ResetData.vue"),
+      },
     ],
   },
   // Always leave this as last one,

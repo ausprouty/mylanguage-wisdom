@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SharedContentSection
+    <DbsQuestions
       :content="commonContent"
       :sectionKey="sectionKey"
       placeholder="Write your notes for this video here"
@@ -10,11 +10,11 @@
 
 <script>
 import { watch, toRefs } from "vue";
-import SharedContentSection from "src/components/SharedContentSection.vue";
+import DbsQuestions from "src/components/DbsQuestions.vue";
 
 export default {
   name: "VideoQuestions",
-  components: { SharedContentSection },
+  components: { DbsQuestions },
   props: {
     commonContent: { type: Object, required: true },
     languageCodeHL: { type: String, required: true },

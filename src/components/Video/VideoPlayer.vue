@@ -14,36 +14,35 @@ export default {
   setup(props) {
     const { videoUrls, lesson } = toRefs(props); // Ensure reactivity
 
-    const videoIframe = ref(null);
+    const videoIframe = ref(""); // Initialize as an empty string to avoid null issues
     const iframeStart = '<iframe id="jplayer" ';
     const iframeEnd =
       " allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>";
 
     // Compute the video URL based on lesson number
-    // videoUrls looks like: {index: 6, url: 'https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6106-0-0&playerStyle=default'}
     const videoUrl = computed(() => {
-      if (!videoUrls.value) return "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
+      if (!videoUrls.value) {
+        return "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
+      }
 
       const foundVideo = videoUrls.value.find(v => v.index === lesson.value);
-
-      return foundVideo ? foundVideo.url : "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
+      return foundVideo
+        ? foundVideo.url
+        : "https://api.arclight.org/videoPlayerUrl?refId=1_529-jf6102-0-0&playerStyle=default";
     });
-
 
     // Update the iframe content when lesson or video URL changes
     const updateVideoIframe = () => {
       if (videoUrl.value) {
         videoIframe.value = `${iframeStart}src="${videoUrl.value}"${iframeEnd}`;
-        console.log (videoIframe.value);
       } else {
-
-        videoIframe.value = null; // Clear if no video found
-        console.log (videoIframe.value);
+        videoIframe.value = ""; // Empty string instead of null to avoid issues
       }
+      console.log("Updated iframe:", videoIframe.value);
     };
 
-    // Watch for changes in lesson number and update the iframe
-    watch(() => props.lesson, updateVideoIframe, { immediate: true });
+    // Watch for changes in lesson number and videoUrls and update the iframe
+    watch([lesson, videoUrls], updateVideoIframe, { immediate: true });
 
     return {
       videoIframe,
