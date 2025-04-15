@@ -8,7 +8,7 @@
     property="og:image"
     content="https://myfriends.network/sites/myfriends/images/standard/MyFriends-App-Facebook.jpg"
   />
-  <meta property="og:url" content="https://wisdom.mmylanguage.net.au" />
+  <meta property="og:url" content="https://wisdom.mylanguage.net.au" />
   <meta property="og:type" content="website" />
 
   <meta name="twitter:card" content="summary_large_image" />

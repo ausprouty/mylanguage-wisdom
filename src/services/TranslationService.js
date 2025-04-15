@@ -1,39 +1,52 @@
 import { currentApi } from "boot/axios";
 
-// services/TranslationService.js
 export async function getCommonContent(languageCodeHL, study) {
   const cacheKey = `${study}-${languageCodeHL}-commonContent`;
-  // Check local storage for cached content
+
+  // Try retrieving and parsing from localStorage
   const localStoredContent = localStorage.getItem(cacheKey);
   if (localStoredContent) {
-    console.log("Using cached content from localStorage for CommonContent.");
-    var parsed = JSON.parse(localStoredContent);
-    return parsed;
+    try {
+      const parsed = JSON.parse(localStoredContent);
+
+      // Ensure it's an object (not null, array, string, etc.)
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        console.log("Using valid cached CommonContent from localStorage.");
+        return parsed;
+      } else {
+        console.warn("Invalid CommonContent structure in cache, will refetch.");
+      }
+    } catch (err) {
+      console.warn("Error parsing cached CommonContent. Will refetch.", err);
+    }
   }
-  // Fallback: API call if content is not found locally
+
+  // Fetch from API if local data is missing or invalid
   const url = `/api/translate/commonContent/${languageCodeHL}/${study}`;
   console.log("Fetching CommonContent from API:", url);
 
   try {
     const response = await currentApi.get(url, { timeout: 10000 });
-
-    // Check if the response is already an object or needs parsing
+    console.log("Fetched CommonContent from", url);
+    console.log(response);
     const data =
       typeof response.data === "string"
         ? JSON.parse(response.data.data)
         : response.data.data;
-
-    console.log("Fetched data:", data);
-
-    // Cache the content locally for future use
-    localStorage.setItem(cacheKey, JSON.stringify(data));
-
-    return data;
+        console.log(data);
+    if (data && typeof data === "object" && !Array.isArray(data)) {
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+      console.log("Fetched and cached new CommonContent.");
+      return data;
+    } else {
+      throw new Error("API returned invalid data format for CommonContent.");
+    }
   } catch (error) {
     console.error(`Error fetching common content: ${error}`);
-    throw error; // Rethrow to allow the caller to handle the error
+    throw error;
   }
 }
+
 
 // services/TranslationService.js
 export async function getLessonContent(languageCodeHL, study, lesson) {
