@@ -1,7 +1,8 @@
 <template>
   <section v-if="content">
-    <h2 class="ltr dbs">{{ content.title }}</h2>
-    <ol class="ltr dbs">
+    <h2 class="dbs">{{ content.title }}</h2>
+    <p class="timing">{{ timing }}</p>
+    <ol class="dbs">
       <li v-for="(item, index) in content.question" :key="'question-' + index">
         {{ item }}
       </li>
@@ -24,6 +25,7 @@ export default {
     content: { type: Object, required: true },
     sectionKey: { type: String, required: true },
     placeholder: { type: String, default: "Write your notes here" },
+    timing: { type: String, default: "(spend one third of your time on this section)" },
 
   },
   setup(props) {
